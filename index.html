@@ -55,7 +55,7 @@
 </head>
 <body class="bg-gray-50">
     <!-- Container for the entire application -->
-    <div class="max-w-md mx-auto h-screen bg-white shadow-lg">
+    <div class="max-w-md mx-auto h-screen bg-white shadow-lg relative">
 
         <!-- Initial Loading View -->
         <div id="loading-view" class="flex flex-col items-center justify-center h-full">
@@ -75,7 +75,7 @@
                     <!-- Notification dot will be added here by JS -->
                 </button>
             </header>
-            <main class="flex-grow overflow-y-auto bg-gray-50">
+            <main class="flex-grow overflow-y-auto bg-gray-50 pb-20">
                 <div id="page-home" class="page p-4"></div>
                 <div id="page-video" class="page p-4"></div>
                 <div id="page-book" class="page p-4"></div>
@@ -83,7 +83,7 @@
                 <div id="page-konten" class="page p-4"></div> <!-- New page for admin content -->
                 <div id="page-profile" class="page p-4"></div>
             </main>
-            <nav class="bottom-nav w-full bg-white p-2 border-t border-gray-200">
+            <nav class="bottom-nav w-full bg-white p-2 border-t border-gray-200 absolute bottom-0 left-0 right-0">
                       <div class="flex justify-around items-center">
                             <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors active" data-page="home"><span class="text-xs nav-text">Beranda</span></button>
                             <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="video"><span class="text-xs nav-text">Video</span></button>
@@ -219,7 +219,6 @@
             if (pageId === 'profile') renderProfilePage();
         }
 
-        // UPDATED: updateNavVisibility function
         function updateNavVisibility() {
             const reportButton = el('nav-item-report');
             const kontenButton = el('nav-item-konten');
@@ -230,7 +229,7 @@
             } else if (currentAdmin) {
                 reportButton.style.display = 'none';
                 kontenButton.style.display = 'flex';
-            } else { // No one is logged in
+            } else { 
                 reportButton.style.display = 'none';
                 kontenButton.style.display = 'none';
             }
