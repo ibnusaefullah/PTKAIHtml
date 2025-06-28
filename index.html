@@ -77,7 +77,7 @@
         .badge:hover {
             transform: scale(1.1);
         }
-        #notification-page-container {
+        #notification-page-container, #settings-page-container {
             transition: transform 0.3s ease-in-out;
         }
     </style>
@@ -89,12 +89,13 @@
         <!-- Initial Loading View -->
         <div id="loading-view" class="flex flex-col items-center justify-center h-full">
             <div class="loader"></div>
-            <p class="mt-4 text-gray-600">Memuat data...</p>
+            <p id="loading-text" class="mt-4 text-gray-600 text-center px-4">Memuat data...</p>
         </div>
 
         <!-- App Container (Main structure) -->
         <div id="app-container" class="h-full flex flex-col">
             <header id="app-header" class="p-4 flex justify-between items-center border-b border-gray-200 bg-white z-10">
+                 <div></div> <!-- Placeholder for spacing -->
                 <h1 id="header-title" class="text-xl font-bold text-gray-800">Beranda</h1>
                  <button id="notification-btn" class="relative text-gray-600 hover:text-red-500 transition-colors">
                      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -171,58 +172,6 @@
         };
         const localAdmin = { username: 'guru', password: '1234' };
         
-        // --- UPDATED DATA ---
-        let localStudentDatabase = { 
-            "12345": { 
-                name: "Budi", 
-                class: "5", 
-                following: ["54321"], 
-                followers: [], 
-                achievements: { 
-                    "Bangun Pagi": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-21", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-14", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08", "2025-06-07"],
-                    "Taat Beribadah": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-21", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-14", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08", "2025-06-07"],
-                    "Berolahraga": ["2025-06-26", "2025-06-24", "2025-06-22", "2025-06-21", "2025-06-19", "2025-06-17", "2025-06-15", "2025-06-13", "2025-06-11", "2025-06-09", "2025-06-07"],
-                    "Makan Sehat": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-21", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-14", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08", "2025-06-07"],
-                    "Gemar Belajar": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09"],
-                    "Aktif Bermasyarakat": ["2025-06-22", "2025-06-21", "2025-06-15", "2025-06-14", "2025-06-08", "2025-06-07"],
-                    "Tidur Cepat": ["2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08"]
-                }, 
-                avatar: "https://placehold.co/100x100/3B82F6/FFFFFF?text=B" 
-            }, 
-            "54321": { name: "Ani", class: "6", following: [], followers: ["12345"], achievements: {}, avatar: "https://placehold.co/100x100/EC4899/FFFFFF?text=A" },
-            "11223": { name: "Cici", class: "5", following: [], followers: [], achievements: {}, avatar: "https://placehold.co/100x100/10B981/FFFFFF?text=C" },
-            "33445": { name: "Dedi", class: "6", following: [], followers: [], achievements: {}, avatar: "https://placehold.co/100x100/F59E0B/FFFFFF?text=D" }
-        };
-        let localVideoCollection = [{id: 'vid_1', title: 'Senam Anak Indonesia Hebat', youtubeId: 'yobwi89woPQ'}];
-        let localBookCollection = [{id: 'book_1', title: 'Buku Contoh', url: '#', cover: 'https://placehold.co/100x140/3B82F6/FFFFFF?text=Buku'}];
-        let activityFeed = [
-            // Sample data for Ani
-            { id: 'act_4', nisn: "54321", name: "Ani", class: "6", date: "28 Juni 2025", completedHabits: ["Berolahraga", "Gemar Belajar"], avatar: localStudentDatabase["54321"].avatar, likes: 10, likedBy: [] },
-            
-            // --- DATA BUDI 3 MINGGU ---
-            { id: 'act_budi_20250607', nisn: "12345", name: "Budi", class: "5", date: "07 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 7, likedBy: [] },
-            { id: 'act_budi_20250608', nisn: "12345", name: "Budi", class: "5", date: "08 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Tidur Cepat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 5, likedBy: [] },
-            { id: 'act_budi_20250609', nisn: "12345", name: "Budi", class: "5", date: "09 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat", "Berolahraga"], avatar: localStudentDatabase["12345"].avatar, likes: 12, likedBy: ["54321"] },
-            { id: 'act_budi_20250610', nisn: "12345", name: "Budi", class: "5", date: "10 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 8, likedBy: [] },
-            { id: 'act_budi_20250611', nisn: "12345", name: "Budi", class: "5", date: "11 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 15, likedBy: ["11223"] },
-            { id: 'act_budi_20250612', nisn: "12345", name: "Budi", class: "5", date: "12 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 9, likedBy: [] },
-            { id: 'act_budi_20250613', nisn: "12345", name: "Budi", class: "5", date: "13 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar"], avatar: localStudentDatabase["12345"].avatar, likes: 11, likedBy: [] },
-            { id: 'act_budi_20250614', nisn: "12345", name: "Budi", class: "5", date: "14 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 6, likedBy: [] },
-            { id: 'act_budi_20250615', nisn: "12345", name: "Budi", class: "5", date: "15 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Tidur Cepat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 10, likedBy: ["54321"] },
-            { id: 'act_budi_20250616', nisn: "12345", name: "Budi", class: "5", date: "16 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 8, likedBy: [] },
-            { id: 'act_budi_20250617', nisn: "12345", name: "Budi", class: "5", date: "17 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Berolahraga", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 14, likedBy: ["11223"] },
-            { id: 'act_budi_20250618', nisn: "12345", name: "Budi", class: "5", date: "18 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 7, likedBy: [] },
-            { id: 'act_budi_20250619', nisn: "12345", name: "Budi", class: "5", date: "19 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 13, likedBy: [] },
-            { id: 'act_budi_20250620', nisn: "12345", name: "Budi", class: "5", date: "20 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar"], avatar: localStudentDatabase["12345"].avatar, likes: 9, likedBy: ["54321"] },
-            { id: 'act_budi_20250621', nisn: "12345", name: "Budi", class: "5", date: "21 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 8, likedBy: [] },
-            { id: 'act_budi_20250622', nisn: "12345", name: "Budi", class: "5", date: "22 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Tidur Cepat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 6, likedBy: [] },
-            { id: 'act_budi_20250623', nisn: "12345", name: "Budi", class: "5", date: "23 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 11, likedBy: [] },
-            { id: 'act_budi_20250624', nisn: "12345", name: "Budi", class: "5", date: "24 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 16, likedBy: ["54321", "11223"] },
-            { id: 'act_budi_20250625', nisn: "12345", name: "Budi", class: "5", date: "25 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 10, likedBy: [] },
-            { id: 'act_budi_20250626', nisn: "12345", name: "Budi", class: "5", date: "26 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 14, likedBy: [] },
-            { id: 'act_budi_20250627', nisn: "12345", name: "Budi", class: "5", date: "27 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar"], avatar: localStudentDatabase["12345"].avatar, likes: 12, likedBy: ["54321"] }
-        ];
-        
         const habits = [
             { name: "Bangun Pagi", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`, hasTimeInput: true },
             { name: "Taat Beribadah", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>` },
@@ -258,9 +207,11 @@
         ];
 
         // --- GLOBAL STATE ---
+        let GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwWdJ_g7BopFzyQgZDU6ZaVx4iIr5LwIeZCiLDJEp8MY0_7Prsurm2rZA3Ek8sVeUtW1A/exec'; 
         let videoCollection = [];
         let bookCollection = [];
         let studentDatabase = {};
+        let activityFeed = [];
         let currentStudent = null;
         let currentAdmin = null;
         let notifications = []; 
@@ -270,19 +221,55 @@
         const el = id => document.getElementById(id);
         const loadingView = el('loading-view');
         const appContainer = el('app-container');
+        const loadingText = el('loading-text');
 
         // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            videoCollection = localVideoCollection;
-            bookCollection = localBookCollection;
-            studentDatabase = localStudentDatabase;
-            initializeNotifications();
-            loadingView.style.display = 'none';
-            appContainer.style.display = 'flex';  
-            setupEventListeners();
-            updateNavVisibility(); 
-            switchPage('home');
+        document.addEventListener('DOMContentLoaded', async () => {
+            let savedUrl = localStorage.getItem('googleSheetUrl');
+            if (savedUrl) {
+                GOOGLE_SHEET_URL = savedUrl;
+            }
+            
+            if (GOOGLE_SHEET_URL.includes('GANTI_DENGAN_ID_DEPLOYMENT_ANDA')) {
+                loadingText.innerHTML = 'URL Google Sheet belum diatur. Silakan edit variabel `GOOGLE_SHEET_URL` di dalam kode HTML ini dengan URL Web App Anda, lalu segarkan halaman.';
+                el('loading-view').querySelector('.loader').style.display = 'none';
+                return;
+            }
+
+            await loadDataFromGoogleSheet();
         });
+
+        async function loadDataFromGoogleSheet() {
+             if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes('GANTI_DENGAN_ID_DEPLOYMENT_ANDA')) return;
+            
+            loadingView.style.display = 'flex';
+            loadingText.textContent = 'Menghubungkan ke Google Sheet...';
+            
+            try {
+                const res = await fetch(GOOGLE_SHEET_URL + "?action=getAllData", { redirect: 'follow' });
+                if (!res.ok) {
+                    throw new Error(`Network response was not ok: ${res.statusText}`);
+                }
+                const data = await res.json();
+                studentDatabase = data.students || {};
+                videoCollection = data.videos || [];
+                bookCollection = data.books || [];
+                activityFeed = data.activityFeed || [];
+                
+                loadingView.style.display = 'none';
+                appContainer.style.display = 'flex';
+                initializeNotifications();
+                setupEventListeners();
+                updateNavVisibility();
+                switchPage('home');
+                
+            } catch(e) {
+                loadingView.style.display = 'flex';
+                loadingText.innerHTML = `Gagal memuat data. Periksa URL Anda di dalam kode dan pastikan skrip telah di-deploy dengan benar.<br><small>Error: ${e.message}</small>`;
+                el('loading-view').querySelector('.loader').style.display = 'none';
+                console.error("Error fetching from sheet:", e);
+            }
+        }
         
         function insertIcons() {
             document.querySelectorAll('.nav-item').forEach(item => {
@@ -470,11 +457,13 @@
                          <div class="grid grid-cols-4 gap-4">
                `;
                 
-                 badgeHTML += badges.map(badge => {
+                badgeHTML += badges.map(badge => {
                      const habitAchievements = achievements[badge.name] || [];
-                     const isUnlocked = habitAchievements.length > 0;
+                     const completions = habitAchievements.length;
+                     const isUnlocked = completions >= 20;
                      const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
-                     const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `showToastNotification('info', 'Lencana terkunci. Selesaikan kebiasaan ini untuk membuka!')`;
+                     const toastMessage = isUnlocked ? '' : `Selesaikan ${20 - completions} kali lagi untuk membuka lencana ini!`;
+                     const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `alert('${toastMessage}')`;
                      return `
                          <div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer">
                              ${icon}
@@ -488,15 +477,21 @@
                  profilePage.innerHTML = `
                  <div class="p-4 space-y-4">
                       <div class="bg-white p-4 rounded-xl shadow-sm">
-                          <div class="flex items-center justify-between">
-                               <img src="${studentData.avatar}" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
-                               <div class="flex-grow text-center">
-                                   <p class="font-bold text-lg">${studentData.followers.length}</p>
-                                   <p class="text-gray-500 text-sm">Pengikut</p>
-                               </div>
-                               <div class="flex-grow text-center">
-                                   <p class="font-bold text-lg">${studentData.following.length}</p>
-                                   <p class="text-gray-500 text-sm">Mengikuti</p>
+                          <div class="flex items-center">
+                               <img src="${studentData.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
+                               <div class="flex-grow flex justify-around">
+                                   <div class="text-center">
+                                       <p class="font-bold text-lg">${studentData.points || 0}</p>
+                                       <p class="text-gray-500 text-sm">Poin</p>
+                                   </div>
+                                   <div class="text-center">
+                                       <p class="font-bold text-lg">${studentData.followers.length}</p>
+                                       <p class="text-gray-500 text-sm">Pengikut</p>
+                                   </div>
+                                   <div class="text-center">
+                                       <p class="font-bold text-lg">${studentData.following.length}</p>
+                                       <p class="text-gray-500 text-sm">Mengikuti</p>
+                                   </div>
                                </div>
                           </div>
                            <h3 class="text-lg font-bold mt-3">${currentStudent.name}</h3>
@@ -718,15 +713,26 @@
             loginModal.querySelector('#login-form-modal').addEventListener('submit', (e) => handleLoginSubmit(e, type));
             loginModal.classList.remove('hidden');
         }
-        function handleLoginSubmit(e, type) {
+        async function handleLoginSubmit(e, type) {
             e.preventDefault();
             if (type === 'student') {
-                const nisnInput = el('nisn-input');
-                const student = studentDatabase[nisnInput.value];
+                const nisnInput = el('nisn-input').value;
+                let student = studentDatabase[nisnInput];
                 if (student) {
-                    currentStudent = { nisn: nisnInput.value, ...student };
+                    const currentMonth = new Date().getMonth() + 1; // 1-12
+                    if (student.lastLoginMonth !== currentMonth) {
+                        student.points = 0;
+                        student.achievements = {};
+                        student.lastLoginMonth = currentMonth;
+                        await postData({ action: 'updateStudentData', payload: { nisn: nisnInput, ...student }});
+                        alert('Selamat datang di bulan baru! Poin dan lencana Anda telah direset.');
+                    }
+                    currentStudent = { nisn: nisnInput, ...student };
                     currentAdmin = null;
-                } else { alert('NISN tidak ditemukan!'); return; }
+                } else { 
+                    alert('NISN tidak ditemukan!'); 
+                    return; 
+                }
             } else { // admin
                 const adminUsernameInput = el('admin-username');
                 const passwordInput = el('admin-password');
@@ -737,7 +743,7 @@
             }
             el('login-modal').classList.add('hidden');
             updateNavVisibility();
-            switchPage('home'); // Go to home after login
+            switchPage('home');
         }
         function handleLogout() {
             currentStudent = null;
@@ -745,15 +751,30 @@
             updateNavVisibility();
             switchPage('profile');
         }
-        function handleHabitFormSubmit(e) {
+        async function handleHabitFormSubmit(e) {
             e.preventDefault();
             const completedHabits = habits.filter(h => el(h.name.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'dan')).checked).map(h => h.name);
             if (completedHabits.length > 0) {
-                const newActivity = { id: `act_${Date.now()}`, nisn: currentStudent.nisn, name: currentStudent.name, class: currentStudent.class, date: new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'}), completedHabits, avatar: currentStudent.avatar, likes: 0, likedBy: [] };
+                const newActivity = { 
+                    id: `act_${Date.now()}`, 
+                    nisn: currentStudent.nisn, 
+                    name: currentStudent.name, 
+                    class: currentStudent.class, 
+                    date: new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'}), 
+                    completedHabits, 
+                    avatar: currentStudent.avatar, 
+                    likes: 0, 
+                    likedBy: [] 
+                };
                 activityFeed.push(newActivity);
+                await postData({ action: 'saveActivity', payload: newActivity });
                 
                 const studentData = studentDatabase[currentStudent.nisn];
                 const currentDate = new Date().toISOString().slice(0, 10);
+
+                const pointsEarned = completedHabits.length;
+                if(!studentData.points) studentData.points = 0;
+                studentData.points += pointsEarned;
                 
                 completedHabits.forEach(habitName => {
                     if (!studentData.achievements[habitName]) {
@@ -763,6 +784,9 @@
                         studentData.achievements[habitName].push(currentDate);
                     }
                 });
+
+                currentStudent = { ...currentStudent, ...studentData };
+                await postData({ action: 'updateStudentData', payload: { nisn: currentStudent.nisn, ...studentData }});
 
                 if (completedHabits.length === habits.length) {
                     notifications.unshift({
@@ -839,6 +863,8 @@
                 }
             }
             activityFeed[activityIndex] = activity;
+            // Update this specific activity in the sheet (optional, for real-time likes)
+            // postData({ action: 'updateActivity', payload: activity });
             renderHomePage(); 
         }
 
@@ -872,6 +898,9 @@
             studentDatabase[targetNisn] = targetUserData;
             currentStudent = { ...currentStudent, ...currentUserData };
             
+            // Update both users in the sheet
+            // postData({ action: 'updateBulkStudents', payload: [currentUserData, targetUserData] });
+
             const activePageId = document.querySelector('.page.active').id.replace('page-', '');
             switchPage(activePageId);
         }
@@ -999,57 +1028,39 @@
             });
         }
 
-        function handleContentSubmit(type, id) {
+        async function handleContentSubmit(type, id) {
             const title = el('content-title').value;
             if (!title) {
                 alert('Judul tidak boleh kosong.');
                 return;
             }
 
+            let newItem = { id: id || `${type.slice(0,1)}_${Date.now()}`, title };
+
             if (type === 'video') {
                 const youtubeId = el('content-youtube-id').value;
-                if (!youtubeId) {
-                    alert('YouTube ID tidak boleh kosong.');
-                    return;
-                }
-                if (id) { // Edit
-                    const index = videoCollection.findIndex(v => v.id === id);
-                    if (index > -1) {
-                        videoCollection[index].title = title;
-                        videoCollection[index].youtubeId = youtubeId;
-                    }
-                } else { // Add
-                    videoCollection.push({ id: `vid_${Date.now()}`, title, youtubeId });
-                }
+                if (!youtubeId) { alert('YouTube ID tidak boleh kosong.'); return; }
+                newItem.youtubeId = youtubeId;
+                const index = videoCollection.findIndex(v => v.id === id);
+                if (index > -1) videoCollection[index] = newItem; else videoCollection.push(newItem);
             } else { // book
                 const url = el('content-url').value;
                 const cover = el('content-cover').value;
-                if (!url || !cover) {
-                    alert('URL Buku dan Cover tidak boleh kosong.');
-                    return;
-                }
-                if (id) { // Edit
-                    const index = bookCollection.findIndex(b => b.id === id);
-                    if (index > -1) {
-                        bookCollection[index].title = title;
-                        bookCollection[index].url = url;
-                        bookCollection[index].cover = cover;
-                    }
-                } else { // Add
-                    bookCollection.push({ id: `book_${Date.now()}`, title, url, cover });
-                }
+                if (!url || !cover) { alert('URL Buku dan Cover tidak boleh kosong.'); return; }
+                newItem.url = url;
+                newItem.cover = cover;
+                const index = bookCollection.findIndex(b => b.id === id);
+                if (index > -1) bookCollection[index] = newItem; else bookCollection.push(newItem);
             }
 
+            await postData({ action: 'saveContent', payload: { type: type, item: newItem }});
             el('content-modal').classList.add('hidden');
             renderKontenPage();
-            // Also refresh video/book page if it's active
             if (el('page-video').classList.contains('active')) renderVideoPage();
             if (el('page-book').classList.contains('active')) renderBookPage();
         }
 
-        function handleDeleteContent(type, id) {
-            // A simple confirmation before deleting. In a real app, a custom modal is better than a native confirm.
-            // For this environment, we simulate a simple yes/no.
+        async function handleDeleteContent(type, id) {
             const userConfirmed = (prompt(`Apakah Anda yakin ingin menghapus item ini? Ketik 'YA' untuk konfirmasi.`) || '').toUpperCase() === 'YA';
 
             if (userConfirmed) {
@@ -1058,12 +1069,29 @@
                 } else { // book
                     bookCollection = bookCollection.filter(b => b.id !== id);
                 }
+                await postData({ action: 'deleteContent', payload: { type: type, id: id }});
                 renderKontenPage();
                  if (el('page-video').classList.contains('active')) renderVideoPage();
                  if (el('page-book').classList.contains('active')) renderBookPage();
             }
         }
 
+        // --- GOOGLE SHEET FUNCTIONS ---
+        async function postData(body) {
+            try {
+                const res = await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(body)
+                });
+                return await res.json();
+            } catch (error) {
+                console.error('Failed to post data:', error);
+                alert("Gagal menyimpan data ke server.");
+            }
+        }
+        
         function timeAgo(date) {
             const seconds = Math.floor((new Date() - date) / 1000);
             if (seconds < 5) return "Baru saja";
@@ -1077,12 +1105,7 @@
         
         // --- NEW NOTIFICATION SYSTEM ---
         function initializeNotifications() {
-            notifications = [
-                { type: 'badge', actorName: 'Budi', actorAvatar: studentDatabase['12345'].avatar, timestamp: new Date(new Date().setDate(new Date().getDate() - 2)) },
-                { type: 'like', actor: studentDatabase['11223'], postOwner: studentDatabase['12345'], timestamp: new Date(new Date().setDate(new Date().getDate() - 1)) },
-                { type: 'follow', actor: studentDatabase['54321'], timestamp: new Date(new Date().setDate(new Date().getDate() - 8)) }
-            ];
-            updateNotificationUI(true);
+            // Notifications are temporary and not stored in the database for this version.
         }
 
         function updateNotificationUI(hasNew) {
@@ -1175,7 +1198,7 @@
             }
             listContainer.innerHTML = contentHTML;
         }
-
+        
     </script>
 </body>
 </html>
