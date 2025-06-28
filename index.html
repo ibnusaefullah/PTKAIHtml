@@ -243,7 +243,7 @@
              if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes('GANTI_DENGAN_ID_DEPLOYMENT_ANDA')) return;
             
             loadingView.style.display = 'flex';
-            loadingText.textContent = 'Menghubungkan ke Google Sheet...';
+            loadingText.textContent = 'Menghubungkan ke Data Server...';
             
             try {
                 const res = await fetch(GOOGLE_SHEET_URL + "?action=getAllData", { redirect: 'follow' });
