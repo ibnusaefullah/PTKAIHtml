@@ -77,11 +77,14 @@
         .badge:hover {
             transform: scale(1.1);
         }
+        #notification-page-container {
+            transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
     <!-- Container for the entire application -->
-    <div class="max-w-md mx-auto h-screen bg-white shadow-lg relative">
+    <div class="max-w-md mx-auto h-screen bg-white shadow-lg relative flex flex-col">
 
         <!-- Initial Loading View -->
         <div id="loading-view" class="flex flex-col items-center justify-center h-full">
@@ -91,17 +94,16 @@
 
         <!-- App Container (Main structure) -->
         <div id="app-container" class="h-full flex flex-col">
-            <header id="app-header" class="p-4 flex justify-between items-center border-b border-gray-200 sticky top-0 bg-white z-10">
+            <header id="app-header" class="p-4 flex justify-between items-center border-b border-gray-200 bg-white z-10">
                 <h1 id="header-title" class="text-xl font-bold text-gray-800">Beranda</h1>
-                <!-- Notification Icon Button -->
-                <button id="notification-btn" class="relative text-gray-600 hover:text-red-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    <!-- Notification dot will be added here by JS -->
-                </button>
+                 <button id="notification-btn" class="relative text-gray-600 hover:text-red-500 transition-colors">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                     </svg>
+                     <span id="notification-dot" class="hidden absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+                 </button>
             </header>
-            <main class="flex-grow overflow-y-auto bg-gray-50 pb-20">
+            <main class="flex-grow overflow-y-auto bg-gray-50">
                 <div id="page-home" class="page p-4"></div>
                 <div id="page-video" class="page p-4"></div>
                 <div id="page-book" class="page p-4"></div>
@@ -109,23 +111,24 @@
                 <div id="page-konten" class="page p-4"></div> <!-- New page for admin content -->
                 <div id="page-profile" class="page p-4"></div>
             </main>
-            <nav class="bottom-nav w-full bg-white p-2 border-t border-gray-200 absolute bottom-0 left-0 right-0">
-                      <div class="flex justify-around items-center">
-                          <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors active" data-page="home"><span class="text-xs nav-text">Beranda</span></button>
-                          <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="video"><span class="text-xs nav-text">Video</span></button>
-                          <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="book"><span class="text-xs nav-text">Buku</span></button>
-                          <button id="nav-item-report" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="report"><span class="text-xs nav-text">Laporan</span></button>
-                          <button id="nav-item-konten" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="konten" style="display: none;"><span class="text-xs nav-text">Konten</span></button>
-                          <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="profile"><span class="text-xs nav-text">Profil</span></button>
-                      </div>
+            <nav class="bottom-nav w-full bg-white p-2 border-t border-gray-200">
+                          <div class="flex justify-around items-center">
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors active" data-page="home"><span class="text-xs nav-text">Beranda</span></button>
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="video"><span class="text-xs nav-text">Video</span></button>
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="book"><span class="text-xs nav-text">Buku</span></button>
+                              <button id="nav-item-report" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="report"><span class="text-xs nav-text">Laporan</span></button>
+                              <button id="nav-item-konten" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="konten" style="display: none;"><span class="text-xs nav-text">Konten</span></button>
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="profile"><span class="text-xs nav-text">Profil</span></button>
+                          </div>
             </nav>
         </div>
     </div>
 
     <!-- Modals -->
     <div id="login-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
+    <div id="content-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
     <div id="badge-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
-    <div id="notification-page-container" class="hidden fixed inset-0 bg-white z-50"></div>
+    <div id="notification-page-container" class="hidden fixed inset-0 bg-white z-50 transform translate-x-full"></div>
 
     <script>
         // --- ICON DEFINITIONS (Modern Instagram Style) ---
@@ -167,20 +170,57 @@
             teacher: "Asep Surasep, S.Pd.",
         };
         const localAdmin = { username: 'guru', password: '1234' };
+        
+        // --- UPDATED DATA ---
         let localStudentDatabase = { 
-            "12345": { name: "Budi", class: "5", following: ["54321"], followers: [], achievements: { "Bangun Pagi": ["2025-06-01", "2025-06-02", "2025-06-03"], "Taat Beribadah": ["2025-06-01", "2025-06-03"], "Berolahraga": ["2025-06-02"], "Makan Sehat": ["2025-06-01", "2025-06-02", "2025-06-03"], "Gemar Belajar": ["2025-06-03"], "Aktif Bermasyarakat": ["2025-06-01"], "Tidur Cepat": ["2025-06-02"] }, avatar: "https://placehold.co/100x100/3B82F6/FFFFFF?text=B" }, 
+            "12345": { 
+                name: "Budi", 
+                class: "5", 
+                following: ["54321"], 
+                followers: [], 
+                achievements: { 
+                    "Bangun Pagi": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-21", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-14", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08", "2025-06-07"],
+                    "Taat Beribadah": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-21", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-14", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08", "2025-06-07"],
+                    "Berolahraga": ["2025-06-26", "2025-06-24", "2025-06-22", "2025-06-21", "2025-06-19", "2025-06-17", "2025-06-15", "2025-06-13", "2025-06-11", "2025-06-09", "2025-06-07"],
+                    "Makan Sehat": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-21", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-14", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08", "2025-06-07"],
+                    "Gemar Belajar": ["2025-06-27", "2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-20", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-13", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09"],
+                    "Aktif Bermasyarakat": ["2025-06-22", "2025-06-21", "2025-06-15", "2025-06-14", "2025-06-08", "2025-06-07"],
+                    "Tidur Cepat": ["2025-06-26", "2025-06-25", "2025-06-24", "2025-06-23", "2025-06-22", "2025-06-19", "2025-06-18", "2025-06-17", "2025-06-16", "2025-06-15", "2025-06-12", "2025-06-11", "2025-06-10", "2025-06-09", "2025-06-08"]
+                }, 
+                avatar: "https://placehold.co/100x100/3B82F6/FFFFFF?text=B" 
+            }, 
             "54321": { name: "Ani", class: "6", following: [], followers: ["12345"], achievements: {}, avatar: "https://placehold.co/100x100/EC4899/FFFFFF?text=A" },
             "11223": { name: "Cici", class: "5", following: [], followers: [], achievements: {}, avatar: "https://placehold.co/100x100/10B981/FFFFFF?text=C" },
             "33445": { name: "Dedi", class: "6", following: [], followers: [], achievements: {}, avatar: "https://placehold.co/100x100/F59E0B/FFFFFF?text=D" }
         };
-        const localVideoCollection = [{id: 'vid_1', title: 'Senam Anak Indonesia Hebat', youtubeId: 'yobwi89woPQ'}];
-        const localBookCollection = [{id: 'book_1', title: 'Buku Contoh', url: '#', cover: 'https://placehold.co/100x140/3B82F6/FFFFFF?text=Buku'}];
+        let localVideoCollection = [{id: 'vid_1', title: 'Senam Anak Indonesia Hebat', youtubeId: 'yobwi89woPQ'}];
+        let localBookCollection = [{id: 'book_1', title: 'Buku Contoh', url: '#', cover: 'https://placehold.co/100x140/3B82F6/FFFFFF?text=Buku'}];
         let activityFeed = [
-            // Sample data for June 2025
-            { id: 'act_1', nisn: "12345", name: "Budi", class: "5", date: "01 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 5, likedBy: ["54321"] },
-            { id: 'act_2', nisn: "12345", name: "Budi", class: "5", date: "02 Juni 2025", completedHabits: ["Bangun Pagi", "Berolahraga", "Makan Sehat", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 2, likedBy: [] },
-            { id: 'act_3', nisn: "12345", name: "Budi", class: "5", date: "03 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar"], avatar: localStudentDatabase["12345"].avatar, likes: 10, likedBy: [] },
-            { id: 'act_4', nisn: "54321", name: "Ani", class: "6", date: "28 Juni 2025", completedHabits: ["Berolahraga", "Gemar Belajar"], avatar: localStudentDatabase["54321"].avatar, likes: 10, likedBy: [] }
+            // Sample data for Ani
+            { id: 'act_4', nisn: "54321", name: "Ani", class: "6", date: "28 Juni 2025", completedHabits: ["Berolahraga", "Gemar Belajar"], avatar: localStudentDatabase["54321"].avatar, likes: 10, likedBy: [] },
+            
+            // --- DATA BUDI 3 MINGGU ---
+            { id: 'act_budi_20250607', nisn: "12345", name: "Budi", class: "5", date: "07 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 7, likedBy: [] },
+            { id: 'act_budi_20250608', nisn: "12345", name: "Budi", class: "5", date: "08 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Tidur Cepat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 5, likedBy: [] },
+            { id: 'act_budi_20250609', nisn: "12345", name: "Budi", class: "5", date: "09 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat", "Berolahraga"], avatar: localStudentDatabase["12345"].avatar, likes: 12, likedBy: ["54321"] },
+            { id: 'act_budi_20250610', nisn: "12345", name: "Budi", class: "5", date: "10 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 8, likedBy: [] },
+            { id: 'act_budi_20250611', nisn: "12345", name: "Budi", class: "5", date: "11 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 15, likedBy: ["11223"] },
+            { id: 'act_budi_20250612', nisn: "12345", name: "Budi", class: "5", date: "12 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 9, likedBy: [] },
+            { id: 'act_budi_20250613', nisn: "12345", name: "Budi", class: "5", date: "13 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar"], avatar: localStudentDatabase["12345"].avatar, likes: 11, likedBy: [] },
+            { id: 'act_budi_20250614', nisn: "12345", name: "Budi", class: "5", date: "14 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 6, likedBy: [] },
+            { id: 'act_budi_20250615', nisn: "12345", name: "Budi", class: "5", date: "15 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Tidur Cepat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 10, likedBy: ["54321"] },
+            { id: 'act_budi_20250616', nisn: "12345", name: "Budi", class: "5", date: "16 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 8, likedBy: [] },
+            { id: 'act_budi_20250617', nisn: "12345", name: "Budi", class: "5", date: "17 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Berolahraga", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 14, likedBy: ["11223"] },
+            { id: 'act_budi_20250618', nisn: "12345", name: "Budi", class: "5", date: "18 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 7, likedBy: [] },
+            { id: 'act_budi_20250619', nisn: "12345", name: "Budi", class: "5", date: "19 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 13, likedBy: [] },
+            { id: 'act_budi_20250620', nisn: "12345", name: "Budi", class: "5", date: "20 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar"], avatar: localStudentDatabase["12345"].avatar, likes: 9, likedBy: ["54321"] },
+            { id: 'act_budi_20250621', nisn: "12345", name: "Budi", class: "5", date: "21 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 8, likedBy: [] },
+            { id: 'act_budi_20250622', nisn: "12345", name: "Budi", class: "5", date: "22 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Tidur Cepat", "Aktif Bermasyarakat"], avatar: localStudentDatabase["12345"].avatar, likes: 6, likedBy: [] },
+            { id: 'act_budi_20250623', nisn: "12345", name: "Budi", class: "5", date: "23 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 11, likedBy: [] },
+            { id: 'act_budi_20250624', nisn: "12345", name: "Budi", class: "5", date: "24 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 16, likedBy: ["54321", "11223"] },
+            { id: 'act_budi_20250625', nisn: "12345", name: "Budi", class: "5", date: "25 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 10, likedBy: [] },
+            { id: 'act_budi_20250626', nisn: "12345", name: "Budi", class: "5", date: "26 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Berolahraga", "Gemar Belajar", "Tidur Cepat"], avatar: localStudentDatabase["12345"].avatar, likes: 14, likedBy: [] },
+            { id: 'act_budi_20250627', nisn: "12345", name: "Budi", class: "5", date: "27 Juni 2025", completedHabits: ["Bangun Pagi", "Taat Beribadah", "Makan Sehat", "Gemar Belajar"], avatar: localStudentDatabase["12345"].avatar, likes: 12, likedBy: ["54321"] }
         ];
         
         const habits = [
@@ -236,6 +276,7 @@
             videoCollection = localVideoCollection;
             bookCollection = localBookCollection;
             studentDatabase = localStudentDatabase;
+            initializeNotifications();
             loadingView.style.display = 'none';
             appContainer.style.display = 'flex';  
             setupEventListeners();
@@ -316,11 +357,19 @@
             const followingList = currentStudent.following || [];
             // Show posts from people the user follows, plus their own posts.
             const feed = activityFeed.filter(act => followingList.includes(act.nisn) || act.nisn === currentStudent.nisn);
+            
+            // Sort feed by date, newest first
+            feed.sort((a, b) => {
+                const dateA = new Date(a.date.split(' ').reverse().join('-').replace(/Juni/g, 'June'));
+                const dateB = new Date(b.date.split(' ').reverse().join('-').replace(/Juni/g, 'June'));
+                return dateB - dateA;
+            });
+
 
             if (feed.length === 0) {
                  contentHTML += `<p class="text-center text-gray-500 mt-8">Feed Anda sepi. Ikuti teman untuk melihat aktivitas mereka di sini.</p>`;
             } else {
-                 contentHTML += feed.slice().reverse().map(activity => renderActivityCard(activity)).join('');
+                 contentHTML += feed.map(activity => renderActivityCard(activity)).join('');
             }
             
             // Suggestions
@@ -416,75 +465,61 @@
                  const achievements = studentData.achievements || {};
 
                  let badgeHTML = `
-                    <div class="bg-white rounded-xl shadow-sm p-4">
-                        <h3 class="text-sm font-bold text-gray-800 mb-2">Lencana Sekolah BRIDE</h3>
-                        <div class="grid grid-cols-4 gap-4">
-                 `;
-                 
+                     <div class="bg-white rounded-xl shadow-sm p-4">
+                         <h3 class="text-sm font-bold text-gray-800 mb-2">Lencana Sekolah BRIDE</h3>
+                         <div class="grid grid-cols-4 gap-4">
+               `;
+                
                  badgeHTML += badges.map(badge => {
-                    const habitAchievements = achievements[badge.name] || [];
-                    const isUnlocked = habitAchievements.length > 0;
-                    const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
-                    const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `showToastNotification('info', 'Lencana terkunci. Selesaikan kebiasaan ini untuk membuka!')`;
-                    return `
-                        <div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer">
-                            ${icon}
-                            <span class="text-xs text-center mt-1 font-medium ${isUnlocked ? 'text-gray-700' : 'text-gray-400'}">${badge.name}</span>
-                        </div>
-                    `;
+                     const habitAchievements = achievements[badge.name] || [];
+                     const isUnlocked = habitAchievements.length > 0;
+                     const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
+                     const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `showToastNotification('info', 'Lencana terkunci. Selesaikan kebiasaan ini untuk membuka!')`;
+                     return `
+                         <div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer">
+                             ${icon}
+                             <span class="text-xs text-center mt-1 font-medium ${isUnlocked ? 'text-gray-700' : 'text-gray-400'}">${badge.name}</span>
+                         </div>
+                     `;
                  }).join('');
 
                  badgeHTML += `</div></div>`;
 
                  profilePage.innerHTML = `
                  <div class="p-4 space-y-4">
-                     <div class="bg-white p-4 rounded-xl shadow-sm">
-                        <div class="flex items-center justify-between">
-                             <img src="${studentData.avatar}" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
-                             <div class="flex-grow text-center">
-                                <p class="font-bold text-lg">${studentData.followers.length}</p>
-                                <p class="text-gray-500 text-sm">Pengikut</p>
-                             </div>
-                              <div class="flex-grow text-center">
-                                <p class="font-bold text-lg">${studentData.following.length}</p>
-                                <p class="text-gray-500 text-sm">Mengikuti</p>
-                             </div>
-                        </div>
-                         <h3 class="text-lg font-bold mt-3">${currentStudent.name}</h3>
-                         <p class="text-gray-500 text-sm">NISN: ${currentStudent.nisn}</p>
-                         <p class="text-xs text-gray-400 mt-1">${schoolData.name} | Kelas ${currentStudent.class} | Wali Kelas: ${schoolData.teacher}</p>
-                     </div>
-                    
-                     ${badgeHTML}
+                      <div class="bg-white p-4 rounded-xl shadow-sm">
+                          <div class="flex items-center justify-between">
+                               <img src="${studentData.avatar}" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
+                               <div class="flex-grow text-center">
+                                   <p class="font-bold text-lg">${studentData.followers.length}</p>
+                                   <p class="text-gray-500 text-sm">Pengikut</p>
+                               </div>
+                               <div class="flex-grow text-center">
+                                   <p class="font-bold text-lg">${studentData.following.length}</p>
+                                   <p class="text-gray-500 text-sm">Mengikuti</p>
+                               </div>
+                          </div>
+                           <h3 class="text-lg font-bold mt-3">${currentStudent.name}</h3>
+                           <p class="text-gray-500 text-sm">NISN: ${currentStudent.nisn}</p>
+                           <p class="text-xs text-gray-400 mt-1">${schoolData.name} | Kelas ${currentStudent.class} | Wali Kelas: ${schoolData.teacher}</p>
+                      </div>
+                     
+                      ${badgeHTML}
 
-                    <div class="bg-white rounded-xl shadow-sm">
-                         <h3 class="px-4 pt-4 pb-2 text-sm font-bold text-gray-800">Unduh Laporan</h3>
-                         <ul class="text-sm text-gray-700">
-                            <li onclick="generateDailyReportPDF(currentStudent)" class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                                <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                    <span class="font-medium">Laporan Harian</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                             <li onclick="generateMonthlyReportPDF(currentStudent)" class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                                <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                                    <span class="font-medium">Laporan Bulanan</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                             <li onclick="generateParentReflectionPDF(currentStudent)" class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                                <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                    <span class="font-medium">Refleksi Orang Tua</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                         </ul>
-                     </div>
+                     <div class="bg-white rounded-xl shadow-sm">
+                          <h3 class="px-4 pt-4 pb-2 text-sm font-bold text-gray-800">Unduh Laporan</h3>
+                          <ul class="text-sm text-gray-700">
+                               <li onclick="generateParentReflectionPDF(currentStudent)" class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
+                                   <div class="flex items-center gap-4">
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                       <span class="font-medium">Refleksi Orang Tua</span>
+                                   </div>
+                                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                               </li>
+                           </ul>
+                      </div>
 
-                     <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
+                       <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
                  </div>`;
             } else if (currentAdmin) {
                 profilePage.innerHTML = `
@@ -500,15 +535,15 @@
             } else {
                  profilePage.innerHTML = `
                  <div class="p-4">
-                     <div class="bg-white p-6 rounded-xl shadow-md text-center">
-                         <img src="https://placehold.co/100x100/CBD5E1/FFFFFF?text=?" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
-                         <h3 class="text-lg font-bold">Anda Belum Login</h3>
-                         <p class="text-gray-500 mb-4">Silakan login untuk melanjutkan.</p>
-                         <div class="space-y-3">
-                             <button id="show-student-login-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg">Login sebagai Siswa</button>
-                             <button id="show-admin-login-btn" class="w-full bg-gray-700 text-white py-2 rounded-lg">Login sebagai Guru</button>
-                         </div>
-                     </div>
+                      <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                           <img src="https://placehold.co/100x100/CBD5E1/FFFFFF?text=?" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
+                           <h3 class="text-lg font-bold">Anda Belum Login</h3>
+                           <p class="text-gray-500 mb-4">Silakan login untuk melanjutkan.</p>
+                           <div class="space-y-3">
+                               <button id="show-student-login-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg">Login sebagai Siswa</button>
+                               <button id="show-admin-login-btn" class="w-full bg-gray-700 text-white py-2 rounded-lg">Login sebagai Guru</button>
+                           </div>
+                      </div>
                  </div>`;
                 el('show-student-login-btn').addEventListener('click', () => showLoginModal('student'));
                 el('show-admin-login-btn').addEventListener('click', () => showLoginModal('admin'));
@@ -523,24 +558,62 @@
             }
 
             container.innerHTML = `
-                <div class="space-y-4">
-                    <section class="bg-white p-4 rounded-lg shadow">
-                        <h2 class="text-lg font-semibold mb-4 text-center">Manajemen Konten</h2>
-                        <div class="space-y-3">
-                            <button class="w-full bg-blue-500 text-white py-2.5 rounded-lg text-sm hover:bg-blue-600 transition flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8.134v3.732a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664l-3.197-2.132z" clip-rule="evenodd" /></svg>
-                                Kelola Video
-                            </button>
-                            <button class="w-full bg-indigo-500 text-white py-2.5 rounded-lg text-sm hover:bg-indigo-600 transition flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" /></svg>
-                                Kelola Buku
+                <div class="space-y-6">
+                    <!-- Video Management Section -->
+                    <section class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-bold text-gray-800">Kelola Video</h2>
+                            <button onclick="showContentModal('video')" class="bg-blue-500 text-white text-sm font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                                Tambah
                             </button>
                         </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            ${videoCollection.map(video => `
+                                <div class="rounded-lg overflow-hidden border border-gray-200">
+                                    <img src="https://img.youtube.com/vi/${video.youtubeId}/0.jpg" alt="${video.title}" class="w-full h-24 object-cover">
+                                    <div class="p-2">
+                                        <h3 class="font-semibold text-sm truncate">${video.title}</h3>
+                                        <div class="flex gap-2 mt-2">
+                                            <button onclick="showContentModal('video', '${video.id}')" class="flex-1 bg-gray-200 text-gray-700 text-xs font-semibold py-1 rounded-md hover:bg-gray-300">Edit</button>
+                                            <button onclick="handleDeleteContent('video', '${video.id}')" class="flex-1 bg-red-100 text-red-700 text-xs font-semibold py-1 rounded-md hover:bg-red-200">Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </section>
-                     <section class="bg-white rounded-xl shadow-sm">
-                         <h3 class="px-4 pt-4 pb-2 text-sm font-bold text-gray-800">Unduh Laporan Siswa</h3>
+
+                    <!-- Book Management Section -->
+                    <section class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-bold text-gray-800">Kelola Buku</h2>
+                             <button onclick="showContentModal('book')" class="bg-blue-500 text-white text-sm font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                                Tambah
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                             ${bookCollection.map(book => `
+                                <div class="rounded-lg overflow-hidden border border-gray-200">
+                                    <img src="${book.cover}" alt="${book.title}" onerror="this.src='https://placehold.co/200x280/CCCCCC/FFFFFF?text=No+Image'" class="w-full h-32 object-cover">
+                                    <div class="p-2">
+                                        <h3 class="font-semibold text-sm truncate">${book.title}</h3>
+                                        <div class="flex gap-2 mt-2">
+                                            <button onclick="showContentModal('book', '${book.id}')" class="flex-1 bg-gray-200 text-gray-700 text-xs font-semibold py-1 rounded-md hover:bg-gray-300">Edit</button>
+                                            <button onclick="handleDeleteContent('book', '${book.id}')" class="flex-1 bg-red-100 text-red-700 text-xs font-semibold py-1 rounded-md hover:bg-red-200">Hapus</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+
+                    <!-- Student Report Section -->
+                    <section class="bg-white rounded-xl shadow-sm">
+                         <h3 class="px-4 pt-4 text-lg font-bold text-gray-800">Unduh Laporan Siswa</h3>
                          <div id="admin-report-controls" class="p-4"></div>
-                     </section>
+                    </section>
                 </div>
             `;
             renderAdminReportDownloader();
@@ -568,7 +641,7 @@
                         </select>
                     </div>
                     <div id="admin-download-buttons" class="hidden pt-4 mt-4 border-t">
-                         <!-- Buttons will be injected here -->
+                        <!-- Buttons will be injected here -->
                     </div>
                 </div>
             `;
@@ -599,28 +672,14 @@
                     const studentData = { nisn: selectedNisn, ...studentDatabase[selectedNisn] };
                     downloadButtonsContainer.innerHTML = `
                         <ul class="text-sm text-gray-700 -mx-4">
-                            <li onclick='generateDailyReportPDF(${JSON.stringify(studentData)})' class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                                <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                    <span class="font-medium">Laporan Harian</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                             <li onclick='generateMonthlyReportPDF(${JSON.stringify(studentData)})' class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                                <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                                    <span class="font-medium">Laporan Bulanan</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                             <li onclick='generateParentReflectionPDF(${JSON.stringify(studentData)})' class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                                <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                    <span class="font-medium">Refleksi Orang Tua</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                         </ul>
+                              <li onclick='generateParentReflectionPDF(${JSON.stringify(studentData)})' class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
+                                 <div class="flex items-center gap-4">
+                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                     <span class="font-medium">Refleksi Orang Tua</span>
+                                 </div>
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                             </li>
+                           </ul>
                     `;
                     downloadButtonsContainer.classList.remove('hidden');
                 } else {
@@ -667,14 +726,14 @@
                 if (student) {
                     currentStudent = { nisn: nisnInput.value, ...student };
                     currentAdmin = null;
-                } else { showToastNotification('error', 'NISN tidak ditemukan!'); return; }
+                } else { alert('NISN tidak ditemukan!'); return; }
             } else { // admin
                 const adminUsernameInput = el('admin-username');
                 const passwordInput = el('admin-password');
                 if (adminUsernameInput.value === localAdmin.username && passwordInput.value === localAdmin.password) {
                     currentAdmin = { username: adminUsernameInput.value };
                     currentStudent = null;
-                } else { showToastNotification('error', 'Username atau password guru salah!'); return; }
+                } else { alert('Username atau password guru salah!'); return; }
             }
             el('login-modal').classList.add('hidden');
             updateNavVisibility();
@@ -694,7 +753,7 @@
                 activityFeed.push(newActivity);
                 
                 const studentData = studentDatabase[currentStudent.nisn];
-                const currentDate = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+                const currentDate = new Date().toISOString().slice(0, 10);
                 
                 completedHabits.forEach(habitName => {
                     if (!studentData.achievements[habitName]) {
@@ -705,76 +764,22 @@
                     }
                 });
 
-                // Check for perfect score to unlock badges
                 if (completedHabits.length === habits.length) {
-                    showToastNotification('success', 'Selamat! Laporan sempurna, semua lencana diraih!');
+                    notifications.unshift({
+                        type: 'badge',
+                        actorName: currentStudent.name,
+                        actorAvatar: currentStudent.avatar,
+                        timestamp: new Date()
+                    });
+                    updateNotificationUI(true);
                 }
                 
                 switchPage('home');
             } else {
-                showToastNotification('warning', 'Pilih minimal satu aktivitas.');
+                alert('Pilih minimal satu aktivitas.');
             }
         }
-
-        // --- NOTIFICATION, LIKE & FOLLOW LOGIC ---
-        function updateNotificationUI() {
-            const notifBtn = el('notification-btn'); let dot = el('notification-dot');
-            if (hasUnreadNotifications) { if (!dot) { notifBtn.insertAdjacentHTML('beforeend', `<span id="notification-dot" class="absolute top-1 right-1 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>`); }
-            } else { if (dot) { dot.remove(); } }
-        }
-        function timeAgo(date) {
-            const seconds = Math.floor((new Date() - date) / 1000);
-            if (seconds < 5) return "Baru saja";
-            let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + " tahun lalu";
-            interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + " bulan lalu";
-            interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + " hari lalu";
-            interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " jam lalu";
-            interval = seconds / 60; if (interval > 1) return Math.floor(interval) + " menit lalu";
-            return Math.floor(seconds) + " detik lalu";
-        }
-        function showNotificationPage() {
-            const container = el('notification-page-container');
-            if (!currentStudent && !currentAdmin) { showToastNotification('warning', 'Silakan login untuk melihat notifikasi.'); return; }
-            
-            const relevantNotifications = notifications.filter(notif => {
-                if (!currentStudent) return false;
-                if (notif.type === 'like') return notif.postOwnerNisn === currentStudent.nisn;
-                if (notif.type === 'follow') return notif.followedNisn === currentStudent.nisn;
-                return false;
-            });
-
-            let contentHTML = (relevantNotifications.length === 0) 
-                ? `<p class="text-center text-gray-500 p-8">Tidak ada aktivitas terbaru.</p>`
-                : relevantNotifications.map(notif => {
-                    let message = '';
-                    let avatar = notif.actorAvatar || `https://placehold.co/100x100/CCCCCC/FFFFFF?text=?`;
-                    if (notif.type === 'like') {
-                        message = `<b>${notif.actorName}</b> menyukai postingan Anda.`;
-                    } else if (notif.type === 'follow') {
-                        message = `<b>${notif.actorName}</b> mulai mengikuti Anda.`;
-                    }
-                    return `<div class="flex items-center gap-3 p-3 border-b border-gray-100"><img src="${avatar}" class="w-10 h-10 rounded-full"><div><p class="text-sm text-gray-800">${message}</p><p class="text-xs text-gray-400">${timeAgo(notif.timestamp)}</p></div></div>`;
-                }).join('');
-
-            container.innerHTML = `
-                <div class="w-full h-full bg-white flex flex-col">
-                    <div class="p-4 border-b flex items-center">
-                        <button onclick="closeNotificationPage()" class="mr-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
-                        </button>
-                        <h2 class="text-lg font-bold text-center flex-grow">Aktivitas Terbaru</h2>
-                    </div>
-                    <div class="flex-grow overflow-y-auto">${contentHTML}</div>
-                </div>
-            `;
-            container.classList.remove('hidden');
-            hasUnreadNotifications = false;
-            updateNotificationUI();
-        }
-        function closeNotificationPage() {
-            el('notification-page-container').classList.add('hidden');
-        }
-        
+       
         function showBadgeDetailsModal(habitName) {
             const badge = badges.find(b => b.name === habitName);
             const studentData = studentDatabase[currentStudent.nisn];
@@ -812,7 +817,7 @@
         }
 
         function handleLikePost(activityId) {
-            if (!currentStudent) { showToastNotification('warning', 'Login sebagai siswa untuk memberi like.'); return; }
+            if (!currentStudent) return;
             const activityIndex = activityFeed.findIndex(activity => activity.id === activityId);
             if (activityIndex === -1) return;
             const activity = activityFeed[activityIndex];
@@ -823,19 +828,14 @@
             } else {
                 activity.likes++;
                 activity.likedBy.push(studentNisn);
-                showToastNotification('success', 'Anda menyukai postingan ini.');
-                
                 if(activity.nisn !== currentStudent.nisn) {
                     notifications.unshift({ 
-                        id: `notif_${Date.now()}`, 
                         type: 'like', 
-                        actorName: currentStudent.name,
-                        actorAvatar: currentStudent.avatar,
-                        postOwnerNisn: activity.nisn,
+                        actor: studentDatabase[currentStudent.nisn],
+                        postOwner: studentDatabase[activity.nisn],
                         timestamp: new Date() 
                     });
-                    hasUnreadNotifications = true; 
-                    updateNotificationUI();
+                    updateNotificationUI(true);
                 }
             }
             activityFeed[activityIndex] = activity;
@@ -856,22 +856,16 @@
             if(isFollowing) {
                 currentUserData.following = currentUserData.following.filter(nisn => nisn !== targetNisn);
                 targetUserData.followers = targetUserData.followers.filter(nisn => nisn !== currentUserNisn);
-                showToastNotification('info', `Anda berhenti mengikuti ${targetUserData.name}.`);
             } else {
                 currentUserData.following.push(targetNisn);
                 targetUserData.followers.push(currentUserNisn);
-                showToastNotification('success', `Anda sekarang mengikuti ${targetUserData.name}.`);
-
-                 notifications.unshift({ 
-                    id: `notif_${Date.now()}`, 
+                notifications.unshift({ 
                     type: 'follow', 
-                    actorName: currentStudent.name, 
-                    actorAvatar: currentStudent.avatar,
+                    actor: studentDatabase[currentUserNisn], 
                     followedNisn: targetNisn, 
                     timestamp: new Date() 
                 });
-                hasUnreadNotifications = true; 
-                updateNotificationUI();
+                updateNotificationUI(true);
             }
 
             studentDatabase[currentUserNisn] = currentUserData;
@@ -881,212 +875,306 @@
             const activePageId = document.querySelector('.page.active').id.replace('page-', '');
             switchPage(activePageId);
         }
-
-        function showToastNotification(type, message) {
-            let bgColor = '', icon = '';
-            if (type === 'success') { bgColor = 'bg-green-500'; icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`; } 
-            else if (type === 'error') { bgColor = 'bg-red-500'; icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`; } 
-            else if (type === 'warning') { bgColor = 'bg-yellow-500'; icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`; } 
-            else if (type === 'info') { bgColor = 'bg-blue-500'; icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`; } 
-            const toastContainer = document.createElement('div');
-            toastContainer.className = 'fixed top-5 right-5 z-[100]';
-            toastContainer.innerHTML = `<div class="toast-content ${bgColor} text-white p-4 rounded-lg shadow-xl flex items-center gap-4 animate-pulse"><div class="flex-shrink-0">${icon}</div><p class="font-semibold">${message}</p></div>`;
-            document.body.appendChild(toastContainer);
-            setTimeout(() => { toastContainer.remove(); }, 3000);
-        }
         
-        // --- PDF GENERATION FUNCTIONS ---
+        // --- PDF GENERATION FUNCTIONS (UPDATED) ---
         function generateParentReflectionPDF(student) {
-            if (!student) {
-                showToastNotification('error', 'Siswa tidak ditemukan.');
-                return;
-            }
+            if (!student) return;
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF('p', 'pt', 'a4'); // Set format to A4
             
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(16);
-            doc.text("Lembar Refleksi Orang Tua", 105, 15, null, null, 'center');
+            doc.text("Lembar Refleksi Orang Tua", doc.internal.pageSize.getWidth() / 2, 60, { align: 'center' });
             
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(12);
-            doc.text(`Nama : ${student.name}`, 14, 25);
-            doc.text(`Kelas : ${student.class}`, 14, 32);
-            doc.text(`Bulan : _________________________`, 14, 39);
+            doc.text(`Nama : ${student.name}`, 40, 90);
+            doc.text(`Kelas : ${student.class}`, 40, 105);
+            doc.text(`Bulan : _________________________`, 40, 120);
 
-            let yPos = 50;
+            let yPos = 150;
 
             habits.forEach(habit => {
-                if (yPos > 260) { // Check for page break
-                    doc.addPage();
-                    yPos = 15;
+                if (yPos > 680) { // Adjusted for more space
+                    doc.addPage(); 
+                    yPos = 40; 
                 }
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(11);
-                doc.text(habit.name, 14, yPos);
+                doc.text(habit.name, 40, yPos);
                 
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(10);
-                doc.text("Kesimpulan/Refleksi:", 16, yPos + 7);
-                doc.rect(16, yPos + 9, 180, 15); // x, y, width, height
-                doc.text("Tindak Lanjut:", 16, yPos + 29);
-                doc.rect(16, yPos + 31, 180, 15);
-                yPos += 50;
+                doc.text("Kesimpulan/Refleksi:", 42, yPos + 20);
+                doc.rect(40, yPos + 25, doc.internal.pageSize.getWidth() - 80, 50); // Increased height
+                doc.text("Tindak Lanjut:", 42, yPos + 90);
+                doc.rect(40, yPos + 95, doc.internal.pageSize.getWidth() - 80, 50); // Increased height
+                yPos += 160;
             });
 
-            doc.save(`refleksi-orang-tua-${student.nisn}.pdf`);
-            showToastNotification('success', 'Memulai unduhan Refleksi Orang Tua...');
-        }
-
-        function generateMonthlyReportPDF(student) {
-            if (!student) {
-                showToastNotification('error', 'Siswa tidak ditemukan.');
-                return;
-            }
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape');
-            const today = new Date();
-            const monthName = today.toLocaleDateString('id-ID', { month: 'long' });
-            const year = today.getFullYear();
-            const lastDayOfMonth = new Date(year, today.getMonth() + 1, 0).getDate();
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.text("Pemantauan Tujuh Kebiasaan Anak Indonesia Hebat (7 KAIH)", 148, 15, null, null, 'center');
-            
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.text(`Nama Satuan Pendidikan: ${schoolData.name}`, 14, 25);
-            doc.text(`NPSN: ${schoolData.npsn}`, 14, 30);
-            doc.text(`Kota/Kabupaten: ${schoolData.city}`, 120, 25);
-            doc.text(`Provinsi: ${schoolData.province}`, 120, 30);
-            doc.text(`Nama Siswa: ${student.name}`, 14, 40);
-            doc.text(`Kelas: ${student.class}`, 120, 40);
-            doc.text(`Bulan: ${monthName} ${year}`, 200, 40);
-
-            const studentActivities = activityFeed.filter(act => {
-                const actDate = new Date(act.date.split(' ').reverse().join('-').replace(/Juni/g, 'June'));
-                return act.nisn === student.nisn &&
-                    actDate.getMonth() === today.getMonth() &&
-                    actDate.getFullYear() === today.getFullYear();
-            });
-
-            const activityMap = new Map();
-            studentActivities.forEach(act => {
-                const day = new Date(act.date.split(' ').reverse().join('-').replace(/Juni/g, 'June')).getDate();
-                activityMap.set(day, act.completedHabits);
-            });
-
-            const head = [['PEMBIASAAN']];
-            const dateCols = Array.from({ length: lastDayOfMonth }, (_, i) => (i + 1).toString());
-            head[0].push(...dateCols, 'Jumlah');
-
-            const body = [];
-            habits.forEach(habit => {
-                let count = 0;
-                const row = [habit.name];
-                for (let day = 1; day <= lastDayOfMonth; day++) {
-                    const completed = activityMap.get(day) || [];
-                    if (completed.includes(habit.name)) {
-                        row.push('✓');
-                        count++;
-                    } else {
-                        row.push('');
-                    }
-                }
-                row.push(count.toString());
-                body.push(row);
-            });
-
-            doc.autoTable({
-                head: head,
-                body: body,
-                startY: 50,
-                theme: 'grid',
-                styles: {
-                    fontSize: 7,
-                    halign: 'center',
-                    valign: 'middle',
-                    cellPadding: 1,
-                    lineWidth: 0.1,
-                    lineColor: [44, 62, 80]
-                },
-                headStyles: {
-                    fontStyle: 'bold',
-                    fillColor: [210, 210, 210],
-                    textColor: [0, 0, 0]
-                },
-                columnStyles: {
-                    0: { halign: 'left', fontStyle: 'bold', cellWidth: 35 },
-                }
-            });
-            
-            let finalY = doc.lastAutoTable.finalY + 15;
-            if (finalY > 180) { // check if there is enough space, if not add new page
+            // Add signature section
+            if (yPos > 680) { // Check for page break before adding signatures
                 doc.addPage();
-                finalY = 20;
+                yPos = 40;
+            } else {
+                yPos += 20;
             }
+            
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const marginRight = 40;
+            const pageWidth = doc.internal.pageSize.getWidth();
 
             doc.setFontSize(10);
-            doc.text(`Indramayu, ${lastDayOfMonth} ${monthName} ${year}`, 230, finalY);
-            doc.text("Mengetahui,", 20, finalY);
-            doc.text("Guru Wali Kelas,", 230, finalY + 5);
-            doc.text("Kepala Sekolah,", 20, finalY + 5);
-
-            finalY += 25; // Space for signature
-            doc.setFont('helvetica', 'bold');
-            doc.text(schoolData.headmaster, 20, finalY);
-            doc.text(schoolData.teacher, 230, finalY);
+            doc.text(`Indramayu, ${formattedDate}`, pageWidth - marginRight, yPos, { align: 'right' });
             
-            doc.setFont('helvetica', 'normal');
-            doc.text(`NIP. ${schoolData.headmasterNip}`, 20, finalY + 5);
+            yPos += 15;
+            doc.text("Guru Kelas/Wali Kelas,", pageWidth - marginRight, yPos, { align: 'right' });
 
-            doc.save(`laporan-bulanan-7kaih-${student.nisn}.pdf`);
-            showToastNotification('success', 'Memulai unduhan Laporan Bulanan...');
+            // Parent signature on the left, aligned with Teacher's signature
+            const parentX = 40;
+            doc.text("Orang Tua/Wali Murid,", parentX, yPos);
+            
+            yPos += 50; // Space for signature
+            doc.text(`(${schoolData.teacher})`, pageWidth - marginRight, yPos, { align: 'right' });
+            doc.text("(___________________)", parentX, yPos);
+            
+            doc.save(`refleksi-orang-tua-${student.nisn}.pdf`);
         }
         
-        function generateDailyReportPDF(student) {
-             if (!student) {
-                showToastNotification('error', 'Siswa tidak ditemukan.');
-                return;
+        // --- CONTENT MANAGEMENT FUNCTIONS ---
+        function showContentModal(type, id = null) {
+            const modal = el('content-modal');
+            const isEdit = id !== null;
+            const title = `${isEdit ? 'Edit' : 'Tambah'} ${type === 'video' ? 'Video' : 'Buku'}`;
+            let item = {};
+            let formFields = '';
+
+            if (type === 'video') {
+                if (isEdit) item = videoCollection.find(v => v.id === id);
+                formFields = `
+                    <div class="space-y-2">
+                        <label for="content-title" class="block text-sm font-medium text-gray-700">Judul Video</label>
+                        <input type="text" id="content-title" value="${item.title || ''}" class="input-field" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="content-youtube-id" class="block text-sm font-medium text-gray-700">YouTube Video ID</label>
+                        <input type="text" id="content-youtube-id" value="${item.youtubeId || ''}" class="input-field" required>
+                    </div>
+                `;
+            } else { // book
+                if (isEdit) item = bookCollection.find(b => b.id === id);
+                formFields = `
+                    <div class="space-y-2">
+                        <label for="content-title" class="block text-sm font-medium text-gray-700">Judul Buku</label>
+                        <input type="text" id="content-title" value="${item.title || ''}" class="input-field" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="content-url" class="block text-sm font-medium text-gray-700">URL Buku</label>
+                        <input type="url" id="content-url" value="${item.url || ''}" class="input-field" required>
+                    </div>
+                     <div class="space-y-2">
+                        <label for="content-cover" class="block text-sm font-medium text-gray-700">URL Cover Buku</label>
+                        <input type="url" id="content-cover" value="${item.cover || ''}" class="input-field" required>
+                    </div>
+                `;
             }
 
-            const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-            const todayActivity = activityFeed.find(act => act.nisn === student.nisn && act.date === todayStr);
-
-            if (!todayActivity) {
-                showToastNotification('warning', `Tidak ada laporan untuk ${student.name} hari ini.`);
-                return;
-            }
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(16);
-            doc.text("Laporan Harian Siswa", 105, 15, null, null, 'center');
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(12);
-            doc.text(`Nama : ${student.name}`, 14, 30);
-            doc.text(`Kelas : ${student.class}`, 14, 37);
-            doc.text(`Tanggal : ${todayStr}`, 14, 44);
-            
-            doc.setFont('helvetica', 'bold');
-            doc.text("Aktivitas yang diselesaikan:", 14, 56);
-
-            doc.setFont('helvetica', 'normal');
-            let yPos = 64;
-            todayActivity.completedHabits.forEach(habit => {
-                doc.text(`- ${habit}`, 20, yPos);
-                yPos += 7;
+            modal.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+                    <h2 class="text-xl font-bold mb-4">${title}</h2>
+                    <form id="content-form" class="space-y-4">
+                        ${formFields}
+                        <div class="flex justify-end gap-3 pt-4">
+                             <button type="button" onclick="el('content-modal').classList.add('hidden')" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300">Batal</button>
+                             <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            el('content-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleContentSubmit(type, id);
             });
-            
-            const dateForFile = new Date().toISOString().split('T')[0];
-            doc.save(`laporan-harian-${student.nisn}-${dateForFile}.pdf`);
-            showToastNotification('success', 'Memulai unduhan Laporan Harian...');
         }
 
+        function handleContentSubmit(type, id) {
+            const title = el('content-title').value;
+            if (!title) {
+                alert('Judul tidak boleh kosong.');
+                return;
+            }
+
+            if (type === 'video') {
+                const youtubeId = el('content-youtube-id').value;
+                if (!youtubeId) {
+                    alert('YouTube ID tidak boleh kosong.');
+                    return;
+                }
+                if (id) { // Edit
+                    const index = videoCollection.findIndex(v => v.id === id);
+                    if (index > -1) {
+                        videoCollection[index].title = title;
+                        videoCollection[index].youtubeId = youtubeId;
+                    }
+                } else { // Add
+                    videoCollection.push({ id: `vid_${Date.now()}`, title, youtubeId });
+                }
+            } else { // book
+                const url = el('content-url').value;
+                const cover = el('content-cover').value;
+                if (!url || !cover) {
+                    alert('URL Buku dan Cover tidak boleh kosong.');
+                    return;
+                }
+                if (id) { // Edit
+                    const index = bookCollection.findIndex(b => b.id === id);
+                    if (index > -1) {
+                        bookCollection[index].title = title;
+                        bookCollection[index].url = url;
+                        bookCollection[index].cover = cover;
+                    }
+                } else { // Add
+                    bookCollection.push({ id: `book_${Date.now()}`, title, url, cover });
+                }
+            }
+
+            el('content-modal').classList.add('hidden');
+            renderKontenPage();
+            // Also refresh video/book page if it's active
+            if (el('page-video').classList.contains('active')) renderVideoPage();
+            if (el('page-book').classList.contains('active')) renderBookPage();
+        }
+
+        function handleDeleteContent(type, id) {
+            // A simple confirmation before deleting. In a real app, a custom modal is better than a native confirm.
+            // For this environment, we simulate a simple yes/no.
+            const userConfirmed = (prompt(`Apakah Anda yakin ingin menghapus item ini? Ketik 'YA' untuk konfirmasi.`) || '').toUpperCase() === 'YA';
+
+            if (userConfirmed) {
+                if (type === 'video') {
+                    videoCollection = videoCollection.filter(v => v.id !== id);
+                } else { // book
+                    bookCollection = bookCollection.filter(b => b.id !== id);
+                }
+                renderKontenPage();
+                 if (el('page-video').classList.contains('active')) renderVideoPage();
+                 if (el('page-book').classList.contains('active')) renderBookPage();
+            }
+        }
+
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 5) return "Baru saja";
+            let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + " tahun lalu";
+            interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + " bulan lalu";
+            interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + " hari lalu";
+            interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " jam lalu";
+            interval = seconds / 60; if (interval > 1) return Math.floor(interval) + " menit lalu";
+            return Math.floor(seconds) + " detik lalu";
+        }
+        
+        // --- NEW NOTIFICATION SYSTEM ---
+        function initializeNotifications() {
+            notifications = [
+                { type: 'badge', actorName: 'Budi', actorAvatar: studentDatabase['12345'].avatar, timestamp: new Date(new Date().setDate(new Date().getDate() - 2)) },
+                { type: 'like', actor: studentDatabase['11223'], postOwner: studentDatabase['12345'], timestamp: new Date(new Date().setDate(new Date().getDate() - 1)) },
+                { type: 'follow', actor: studentDatabase['54321'], timestamp: new Date(new Date().setDate(new Date().getDate() - 8)) }
+            ];
+            updateNotificationUI(true);
+        }
+
+        function updateNotificationUI(hasNew) {
+            if (hasNew) {
+                el('notification-dot').classList.remove('hidden');
+            }
+        }
+        
+        function showNotificationPage() {
+            const container = el('notification-page-container');
+            if (!currentStudent) return;
+            
+            container.innerHTML = `
+                <div class="w-full h-full bg-white flex flex-col">
+                    <div class="p-4 border-b flex items-center">
+                        <button onclick="closeNotificationPage()" class="mr-4 text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                        <h2 class="text-lg font-bold text-gray-800 flex-grow">Notifikasi</h2>
+                    </div>
+                    <div id="notification-list" class="flex-grow overflow-y-auto p-2"></div>
+                </div>
+            `;
+            renderNotifications();
+            container.classList.remove('hidden', 'translate-x-full');
+            el('notification-dot').classList.add('hidden');
+        }
+
+        function closeNotificationPage() {
+            const container = el('notification-page-container');
+            container.classList.add('translate-x-full');
+            setTimeout(() => container.classList.add('hidden'), 300);
+        }
+        
+        function renderNotifications() {
+            const listContainer = el('notification-list');
+            if (!currentStudent || !listContainer) return;
+            
+            const relevantNotifications = notifications.filter(notif => {
+                if (notif.type === 'badge' && notif.actorName === currentStudent.name) return true;
+                if (notif.type === 'like' && notif.postOwner.nisn === currentStudent.nisn) return true;
+                 if (notif.type === 'follow' && notif.actor.nisn !== currentStudent.nisn && !currentStudent.following.includes(notif.actor.nisn) ) return true; // Show follow notifs from non-followers
+                return false;
+            }).sort((a,b) => b.timestamp - a.timestamp);
+            
+            if (relevantNotifications.length === 0) {
+                 listContainer.innerHTML = `<p class="text-center text-gray-500 p-8">Tidak ada aktivitas terbaru.</p>`;
+                 return;
+            }
+
+            const groupNotificationsByTime = (notifications) => {
+                const groups = { "Minggu Ini": [], "Bulan Ini": [], "Sebelumnya": [] };
+                const now = new Date();
+                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+                notifications.forEach(n => {
+                    const notifDate = n.timestamp;
+                    if (notifDate > oneWeekAgo) groups["Minggu Ini"].push(n);
+                    else if (notifDate > oneMonthAgo) groups["Bulan Ini"].push(n);
+                    else groups["Sebelumnya"].push(n);
+                });
+                return groups;
+            };
+
+            const grouped = groupNotificationsByTime(relevantNotifications);
+            let contentHTML = '';
+
+            for (const groupName in grouped) {
+                if (grouped[groupName].length > 0) {
+                    contentHTML += `<h3 class="font-bold text-md p-2 text-gray-800">${groupName}</h3>`;
+                    contentHTML += grouped[groupName].map(notif => {
+                        let message = '';
+                        let avatarUrl = notif.actor ? notif.actor.avatar : notif.actorAvatar;
+                        if (notif.type === 'like') {
+                            message = `<b>${notif.actor.name}</b> menyukai postingan Anda.`;
+                        } else if (notif.type === 'follow') {
+                            message = `<b>${notif.actor.name}</b> mulai mengikuti Anda.`;
+                        } else if (notif.type === 'badge') {
+                            message = `<b>Selamat!</b> Kamu baru saja mendapatkan semua lencana pencapaian.`;
+                        }
+                        return `
+                        <div class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg">
+                           <img src="${avatarUrl}" class="w-10 h-10 rounded-full">
+                           <p class="text-sm text-gray-800 flex-grow">${message}</p>
+                           <span class="text-xs text-gray-400">${timeAgo(notif.timestamp)}</span>
+                        </div>`;
+                    }).join('');
+                }
+            }
+            listContainer.innerHTML = contentHTML;
+        }
 
     </script>
 </body>
