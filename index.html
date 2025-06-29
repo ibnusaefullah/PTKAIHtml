@@ -270,9 +270,8 @@
         ];
 
         // --- GLOBAL STATE ---
-        // PENTING: Ganti dengan URL dan ID Anda sendiri
         const SPREADSHEET_ID = '1Dqqe8haYw4VH_T-93GgSwQXaKc0mtKDULZQ0o3DmFhY'; // <-- GANTI DENGAN ID GOOGLE SHEET ANDA
-        let GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyGuHoELrNjbai8irPIBt6Mca7ui51z-goxq2-TlFpbwvimzUm5aqzUoGXKCaZZ_yYVdA/exec'; 
+        let GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbya1tfslVMusSA8L6TcdHxKbbUtupYztfNiROWZ48qA3PoEvVgxG6d4dqXgQ66yzMyihQ/exec'; 
         let videoCollection = {};
         let bookCollection = {};
         let studentDatabase = {};
@@ -281,7 +280,7 @@
         let currentAdmin = null;
         let notifications = []; 
         let hasUnreadNotifications = false;
-        let html5QrCode; // Variabel global untuk instance QR scanner
+        let html5QrCode; 
 
         // --- MAIN ELEMENTS ---
         const el = id => document.getElementById(id);
@@ -303,6 +302,22 @@
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
+        
+        // --- DATE PARSING & FORMATTING ---
+        function formatDateForSheet(date) {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        function formatDateForDisplay(timestamp) {
+            return new Date(timestamp).toLocaleDateString('id-ID', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            }).replace(/\./g, ':');
+        }
+
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', async () => {
@@ -427,7 +442,7 @@
             const feedArray = Object.values(activityFeed)
                 .filter(act => followingList.includes(act.nisn) || act.nisn === currentStudent.nisn);
             
-            feedArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+            feedArray.sort((a, b) => parseInt(b.id.split('_')[1]) - parseInt(a.id.split('_')[1]));
 
             if (feedArray.length === 0) {
                 contentHTML += `<div class="text-center mt-8 p-4"><p>Feed Anda sepi. Ikuti teman untuk melihat aktivitas mereka di sini.</p></div>`;
@@ -465,9 +480,13 @@
         }
         
         function renderActivityCard(activity) {
-            const displayDate = timeAgo(activity.date);
+            const timestamp = parseInt(activity.id.split('_')[1]);
+            const displayDate = formatDateForDisplay(timestamp);
             const likedByArray = Array.isArray(activity.likedBy) ? activity.likedBy : [];
             const isLiked = currentStudent && likedByArray.includes(currentStudent.nisn);
+            const habitsToShow = typeof activity.completedHabits === 'string' 
+                ? activity.completedHabits.split(',') 
+                : (activity.completedHabits || []);
 
             return `
                 <div class="activity-card py-3">
@@ -484,7 +503,7 @@
                     <div class="px-4">
                          <p class="font-semibold text-sm mb-2">Telah menyelesaikan:</p>
                          <div class="grid grid-cols-2 gap-2 text-sm">
-                            ${(activity.completedHabits || []).map(habit => {
+                            ${habitsToShow.map(habit => {
                                 const habitInfo = habits.find(h => h.name === habit);
                                 return `<div class="flex items-center gap-2 p-2 rounded-lg" style="background-color: var(--bg-secondary);"><span style="color: var(--text-secondary)">${habitInfo ? habitInfo.icon : ''}</span><span>${habit}</span></div>`
                             }).join('')}
@@ -869,9 +888,9 @@
             const form = e.target;
             const submitButton = form.querySelector('button[type="submit"]');
 
-            const todayString = new Date().toISOString().slice(0, 10);
+            const todayString = formatDateForSheet(new Date()); // e.g., "29/06/2025"
             const todaysPost = Object.values(activityFeed).find(act => 
-                act.nisn === currentStudent.nisn && act.date.startsWith(todayString)
+                act.nisn === currentStudent.nisn && act.date === todayString
             );
             if (todaysPost) {
                 alert('Anda sudah memposting aktivitas untuk hari ini.');
@@ -889,6 +908,8 @@
 
             submitButton.disabled = true;
             submitButton.innerHTML = `<span class="loader-small"></span> Mengirim...`;
+            
+            const newActivityDate = formatDateForSheet(new Date());
 
             const newActivityId = `act_${Date.now()}`;
             const newActivity = {
@@ -896,8 +917,8 @@
                 nisn: currentStudent.nisn,
                 name: currentStudent.name,
                 class: currentStudent.class,
-                date: new Date().toISOString(),
-                completedHabits,
+                date: newActivityDate, 
+                completedHabits: completedHabits.join(','), 
                 avatar: currentStudent.avatar,
                 likes: 0,
                 likedBy: []
@@ -912,8 +933,9 @@
                 if (!studentDataToUpdate.achievements[habitName]) {
                     studentDataToUpdate.achievements[habitName] = [];
                 }
-                if (!studentDataToUpdate.achievements[habitName].includes(todayString)) {
-                    studentDataToUpdate.achievements[habitName].push(todayString);
+                const dateForAchievement = new Date().toISOString().slice(0, 10);
+                if (!studentDataToUpdate.achievements[habitName].includes(dateForAchievement)) {
+                    studentDataToUpdate.achievements[habitName].push(dateForAchievement);
                 }
             });
 
@@ -921,7 +943,7 @@
                 studentUpdate: studentDataToUpdate,
                 activity: newActivity,
                 dailyPoints: {
-                    id: `pts_${currentStudent.nisn}_${todayString}`,
+                    id: `pts_${currentStudent.nisn}_${todayString.replace(/\//g,'-')}`,
                     nisn: currentStudent.nisn,
                     date: todayString,
                     points: pointsEarned
@@ -1207,8 +1229,9 @@
             }
         }
         
-        function timeAgo(date) {
-            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+        function timeAgo(dateStr) {
+            const date = parseSheetDate(dateStr);
+            const seconds = Math.floor((new Date() - date) / 1000);
             if (seconds < 5) return "Baru saja";
             let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + " tahun lalu";
             interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + " bulan lalu";
