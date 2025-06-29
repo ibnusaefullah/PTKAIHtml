@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7 KAIH - Menu Modern</title>
+    <title>Apps 7KAIH Smart</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -51,7 +51,7 @@
             color: var(--text-primary);
             transition: background-color 0.3s, color 0.3s;
         }
-        #app-shell, .modal-content, #notification-page-container, #qr-scanner-view {
+        #app-shell, .modal-content, #notification-page-container, #qr-scanner-view, #book-details-modal-content {
              background-color: var(--bg-primary);
              color: var(--text-primary);
         }
@@ -131,6 +131,17 @@
             background-color: var(--bg-primary);
             border-bottom: 1px solid var(--border-color);
         }
+        .category-btn {
+            scroll-snap-align: start;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-black">
@@ -143,7 +154,7 @@
             <p id="loading-text" class="mt-4 text-gray-600 dark:text-gray-400 text-center px-4">Memuat data...</p>
         </div>
         
-        <!-- [NEW] QR Code Scanner View -->
+        <!-- QR Code Scanner View -->
         <div id="qr-scanner-view" class="fixed inset-0 z-50 flex flex-col p-4">
             <h2 class="text-xl font-bold text-center mb-4">Pindai QR Code Siswa</h2>
             <div id="qr-reader" class="w-full flex-grow"></div>
@@ -170,7 +181,7 @@
             <main class="flex-grow overflow-y-auto">
                 <div id="page-home" class="page"></div>
                 <div id="page-video" class="page p-4"></div>
-                <div id="page-book" class="page p-4"></div>
+                <div id="page-book" class="page h-full"></div>
                 <div id="page-report" class="page p-4"></div>
                 <div id="page-konten" class="page p-4"></div>
                 <div id="page-profile" class="page"></div>
@@ -192,6 +203,7 @@
     <div id="login-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
     <div id="content-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
     <div id="badge-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
+    <div id="book-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end"></div>
     <div id="notification-page-container" class="hidden fixed inset-0 z-50 transform translate-x-full"></div>
 
     <script>
@@ -270,8 +282,7 @@
         ];
 
         // --- GLOBAL STATE ---
-        const SPREADSHEET_ID = '1Dqqe8haYw4VH_T-93GgSwQXaKc0mtKDULZQ0o3DmFhY'; // <-- GANTI DENGAN ID GOOGLE SHEET ANDA
-        let GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbya1tfslVMusSA8L6TcdHxKbbUtupYztfNiROWZ48qA3PoEvVgxG6d4dqXgQ66yzMyihQ/exec'; 
+        let GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzRsnk_8Bxg09aRttOZvlSTudiiBmtPY7cZe06HJBZ9bG4n4QVVY5JQPJs-YwoNOeC0nw/exec'; 
         let videoCollection = {};
         let bookCollection = {};
         let studentDatabase = {};
@@ -349,6 +360,13 @@
                 studentDatabase = data.students || {};
                 videoCollection = data.videos || {};
                 bookCollection = data.books || {};
+                // Add category and description to book collection for new UI
+                Object.keys(bookCollection).forEach((key, index) => {
+                    const book = bookCollection[key];
+                    book.category = book.category || ['Fiksi', 'Non-Fiksi', 'Pelajaran', 'Anak'][index % 4];
+                    book.description = book.description || `Ini adalah deskripsi untuk buku "${book.title}". Baca selengkapnya untuk mengetahui isinya.`;
+                });
+
                 activityFeed = data.activityFeed || {};
                 
                 loadingView.style.display = 'none';
@@ -393,11 +411,11 @@
                 if (existingIcon) existingIcon.remove();
                 if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.outline);
                  if (item.dataset && item.dataset.page === pageId) {
-                    item.classList.add('active');
-                    el('header-title').textContent = item.querySelector('.nav-text').textContent;
-                    const activeIcon = item.querySelector('svg');
-                    if (activeIcon) activeIcon.remove();
-                    if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.filled);
+                     item.classList.add('active');
+                     el('header-title').textContent = item.querySelector('.nav-text').textContent;
+                     const activeIcon = item.querySelector('svg');
+                     if (activeIcon) activeIcon.remove();
+                     if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.filled);
                  }
             });
             const newPage = el(`page-${pageId}`);
@@ -503,21 +521,21 @@
                     <div class="px-4">
                          <p class="font-semibold text-sm mb-2">Telah menyelesaikan:</p>
                          <div class="grid grid-cols-2 gap-2 text-sm">
-                            ${habitsToShow.map(habit => {
-                                const habitInfo = habits.find(h => h.name === habit);
-                                return `<div class="flex items-center gap-2 p-2 rounded-lg" style="background-color: var(--bg-secondary);"><span style="color: var(--text-secondary)">${habitInfo ? habitInfo.icon : ''}</span><span>${habit}</span></div>`
-                            }).join('')}
+                             ${habitsToShow.map(habit => {
+                                 const habitInfo = habits.find(h => h.name === habit);
+                                 return `<div class="flex items-center gap-2 p-2 rounded-lg" style="background-color: var(--bg-secondary);"><span style="color: var(--text-secondary)">${habitInfo ? habitInfo.icon : ''}</span><span>${habit}</span></div>`
+                             }).join('')}
                          </div>
                     </div>
 
                     <div class="px-4 pt-4 flex items-center justify-between">
                          <div class="flex items-center gap-4">
-                            <button onclick="handleLikePost('${activity.id}')" class="flex items-center gap-2">
-                                ${isLiked
-                                    ? `<svg aria-label="Batal Suka" class="h-7 w-7 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>`
-                                    : `<svg aria-label="Suka" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>`
-                                }
-                            </button>
+                             <button onclick="handleLikePost('${activity.id}')" class="flex items-center gap-2">
+                                 ${isLiked
+                                     ? `<svg aria-label="Batal Suka" class="h-7 w-7 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>`
+                                     : `<svg aria-label="Suka" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>`
+                                 }
+                             </button>
                          </div>
                     </div>
                     <div class="px-4 pt-2">
@@ -540,10 +558,123 @@
         function renderBookPage() {
             const bookPage = el('page-book');
             const books = Object.values(bookCollection);
-            if (books.length === 0) {
-                bookPage.innerHTML = `<p class="text-center mt-8">Belum ada buku yang tersedia.</p>`; return;
+            const categories = ["Semua", ...new Set(books.map(book => book.category || "Lainnya"))];
+
+            bookPage.innerHTML = `
+                <div class="flex flex-col h-full">
+                    <div class="p-3 sticky top-0" style="background-color: var(--bg-primary);">
+                        <div class="relative mb-3">
+                            <input type="search" id="book-search-input" class="input-field !rounded-full pl-10" placeholder="Cari di perpustakaan...">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <svg class="w-5 h-5" style="color: var(--text-secondary);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </div>
+                        </div>
+                        <div id="book-categories" class="flex space-x-2 overflow-x-auto pb-1 no-scrollbar" style="scroll-snap-type: x mandatory;">
+                            ${categories.map((cat, index) => `
+                                <button class="category-btn flex-shrink-0 text-sm font-semibold py-2 px-4 rounded-full transition-colors ${index === 0 ? 'bg-blue-500 text-white shadow' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}" data-category="${cat}">
+                                    ${cat}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div id="book-grid-container" class="flex-grow overflow-y-auto px-3 pb-3">
+                        <div id="book-grid" class="grid grid-cols-3 gap-2">
+                        </div>
+                        <div id="no-books-found" class="hidden text-center py-16" style="color: var(--text-secondary);">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16" style="color: var(--border-color);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                            <p class="font-semibold mt-4">Buku tidak ditemukan</p>
+                            <p class="text-sm">Coba gunakan kata kunci atau kategori yang lain.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            displayBooks();
+
+            el('book-search-input').addEventListener('input', displayBooks);
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.category-btn').forEach(b => {
+                        b.classList.remove('bg-blue-500', 'text-white', 'shadow');
+                        b.classList.add('bg-gray-200', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-200');
+                    });
+                    e.currentTarget.classList.add('bg-blue-500', 'text-white', 'shadow');
+                    e.currentTarget.classList.remove('bg-gray-200', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-200');
+                    displayBooks();
+                });
+            });
+        }
+
+        function displayBooks() {
+            const grid = el('book-grid');
+            const noResults = el('no-books-found');
+            const searchQuery = el('book-search-input').value.toLowerCase();
+            const activeCategoryBtn = document.querySelector('.category-btn.bg-blue-500');
+            const selectedCategory = activeCategoryBtn ? activeCategoryBtn.dataset.category : 'Semua';
+
+            let filteredBooks = Object.values(bookCollection);
+
+            if (selectedCategory !== 'Semua') {
+                filteredBooks = filteredBooks.filter(book => (book.category || "Lainnya") === selectedCategory);
             }
-            bookPage.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">${books.map(book => `<div class="rounded-lg shadow-sm overflow-hidden" style="background-color: var(--bg-primary);"><img src="${book.cover}" onerror="this.src='https://placehold.co/200x280/CCCCCC/FFFFFF?text=No+Image'" alt="Cover Buku" class="w-full h-auto object-cover aspect-[5/7] rounded-t-lg"><div class="p-3 text-center"><h3 class="font-semibold text-sm truncate">${book.title}</h3><a href="${book.url}" target="_blank" class="block mt-2 text-blue-500 hover:underline text-xs">Baca Buku</a></div></div>`).join('')}</div>`;
+
+            if (searchQuery) {
+                filteredBooks = filteredBooks.filter(book => book.title.toLowerCase().includes(searchQuery));
+            }
+            
+            if (filteredBooks.length > 0) {
+                grid.innerHTML = '';
+                noResults.classList.add('hidden');
+                grid.classList.remove('hidden');
+                filteredBooks.forEach(book => {
+                    const bookEl = document.createElement('div');
+                    bookEl.className = 'w-full aspect-[2/3] bg-cover bg-center cursor-pointer rounded-lg shadow-md transition-transform duration-200 hover:scale-105';
+                    bookEl.style.backgroundImage = `url('${book.cover}')`;
+                    bookEl.style.backgroundColor = 'var(--bg-secondary)';
+                    bookEl.addEventListener('click', () => showBookDetailModal(book.id));
+                    grid.appendChild(bookEl);
+                });
+            } else {
+                grid.innerHTML = '';
+                grid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            }
+        }
+        
+        function showBookDetailModal(bookId) {
+            const book = bookCollection[bookId];
+            if (!book) return;
+
+            const modal = el('book-details-modal');
+            modal.innerHTML = `
+                <div id="book-details-modal-content" class="w-full rounded-t-2xl p-4 transition-transform transform translate-y-full">
+                     <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
+                     <div class="flex gap-4 items-start">
+                        <img src="${book.cover}" onerror="this.src='https://placehold.co/100x140/CCCCCC/FFFFFF?text=Err'" class="w-24 h-36 object-cover rounded-lg shadow-lg flex-shrink-0">
+                        <div class="flex-grow">
+                             <h3 class="font-bold text-lg">${book.title}</h3>
+                             <p class="text-sm font-medium text-blue-500 mb-2">${book.category}</p>
+                             <p class="text-sm" style="color: var(--text-secondary);">${book.description}</p>
+                        </div>
+                     </div>
+                     <a href="${book.url}" target="_blank" class="block w-full text-center bg-blue-500 text-white font-bold py-3 px-4 rounded-lg mt-6 hover:bg-blue-600 transition">
+                        Baca Sekarang
+                     </a>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            
+            const modalContent = el('book-details-modal-content');
+            setTimeout(() => {
+                modalContent.classList.remove('translate-y-full');
+            }, 10);
+
+            modal.addEventListener('click', (e) => {
+                 if (e.target.id === 'book-details-modal') {
+                    modalContent.classList.add('translate-y-full');
+                    setTimeout(() => modal.classList.add('hidden'), 300);
+                 }
+            });
         }
         
         function renderProfilePage() {
@@ -571,15 +702,15 @@
                     <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
                          <h3 class="text-sm font-bold mb-2">Lencana Pencapaian</h3>
                          <div class="grid grid-cols-4 gap-4">
-                            ${badges.map(badge => {
-                                const habitAchievements = achievements[badge.name] || [];
-                                const completions = habitAchievements.length;
-                                const isUnlocked = completions >= 20;
-                                const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
-                                const toastMessage = isUnlocked ? '' : `Selesaikan ${20 - completions} kali lagi untuk membuka lencana ini!`;
-                                const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `alert('${toastMessage}')`;
-                                return `<div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer"><div class="w-14 h-14">${icon}</div><span class="text-xs text-center mt-1 font-medium ${isUnlocked ? '' : 'opacity-50'}">${badge.name}</span></div>`;
-                            }).join('')}
+                             ${badges.map(badge => {
+                                 const habitAchievements = achievements[badge.name] || [];
+                                 const completions = habitAchievements.length;
+                                 const isUnlocked = completions >= 20;
+                                 const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
+                                 const toastMessage = isUnlocked ? '' : `Selesaikan ${20 - completions} kali lagi untuk membuka lencana ini!`;
+                                 const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `alert('${toastMessage}')`;
+                                 return `<div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer"><div class="w-14 h-14">${icon}</div><span class="text-xs text-center mt-1 font-medium ${isUnlocked ? '' : 'opacity-50'}">${badge.name}</span></div>`;
+                             }).join('')}
                          </div>
                     </div>
 
@@ -641,9 +772,9 @@
                            <span class="font-medium">Unduh Refleksi Orang Tua</span>
                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         </button>
-                        <button onclick="openMonthlyReportSheet()" class="flex items-center justify-between w-full py-2">
-                           <span class="font-medium">Lihat Laporan Bulanan di Sheet</span>
-                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        <button onclick="downloadMonthlyReportPDF()" class="flex items-center justify-between w-full py-2">
+                           <span class="font-medium">Unduh Laporan Bulanan</span>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         </button>
                     </div>
                 `;
@@ -791,9 +922,9 @@
                                <span class="font-medium">Unduh Refleksi Orang Tua</span>
                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                            </button>
-                           <button onclick='openMonthlyReportSheet()' class="flex items-center justify-between w-full py-2 text-left">
-                               <span class="font-medium">Lihat Laporan Bulanan di Sheet</span>
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                           <button onclick='downloadMonthlyReportPDF()' class="flex items-center justify-between w-full py-2 text-left">
+                               <span class="font-medium">Unduh Laporan Bulanan</span>
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                            </button>
                         </div>
                     `;
@@ -1049,12 +1180,8 @@
         }
         
         // --- PDF & LINKING FUNCTIONS ---
-        function openMonthlyReportSheet() {
-            if (!SPREADSHEET_ID) {
-                alert("ID Spreadsheet belum diatur di dalam kode HTML.");
-                return;
-            }
-            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/`;
+        function downloadMonthlyReportPDF() {
+            const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ71uzBxbU_fk8hPiGETaKuLFCVet6zoU-ikg3fP6LeHTbPd59ronYd4UPD24qfy-IKFBHyX_53T1rz/pub?gid=1935868&single=true&output=pdf";
             window.open(url, '_blank');
         }
 
@@ -1145,6 +1272,14 @@
                         <label for="content-cover" class="block text-sm font-medium">URL Cover Buku</label>
                         <input type="url" id="content-cover" value="${item.cover || ''}" class="input-field" required>
                     </div>
+                    <div class="space-y-2">
+                        <label for="content-category" class="block text-sm font-medium">Kategori</label>
+                        <input type="text" id="content-category" value="${item.category || ''}" class="input-field" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="content-description" class="block text-sm font-medium">Deskripsi</label>
+                        <textarea id="content-description" class="input-field" rows="3" required>${item.description || ''}</textarea>
+                    </div>
                 `;
             }
 
@@ -1184,16 +1319,19 @@
             } else { // book
                 const url = el('content-url').value;
                 const cover = el('content-cover').value;
-                if (!url || !cover) { alert('URL Buku dan Cover tidak boleh kosong.'); return; }
+                const category = el('content-category').value;
+                const description = el('content-description').value;
+                if (!url || !cover || !category || !description) { alert('Semua field buku harus diisi.'); return; }
                 newItem.url = url;
                 newItem.cover = cover;
+                newItem.category = category;
+                newItem.description = description;
                 bookCollection[newItem.id] = newItem;
             }
 
             await postData({ action: 'saveContent', payload: { type: type, item: newItem }});
             el('content-modal').classList.add('hidden');
             renderKontenPage();
-            if (el('page-video').classList.contains('active')) renderVideoPage();
             if (el('page-book').classList.contains('active')) renderBookPage();
         }
 
