@@ -55,7 +55,6 @@
         .toggle-checkbox:checked { right: 0; border-color: #3897f0; }
         .toggle-checkbox:checked + .toggle-label { background-color: #3897f0; }
         .loader { border: 4px solid #f3f3f3; border-radius: 50%; border-top: 4px solid #3498db; width: 40px; height: 40px; animation: spin 2s linear infinite; }
-        .loader-small { border: 2px solid #f3f3f3; border-radius: 50%; border-top: 2px solid #3498db; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; margin-right: 8px; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .follow-btn {
             padding: 4px 12px;
@@ -65,8 +64,8 @@
             transition: all 0.2s ease-in-out;
         }
         .follow-btn.following {
-            background-color: #E5E7EB; /* gray-200 */
-            color: #374151; /* gray-700 */
+             background-color: #E5E7EB; /* gray-200 */
+             color: #374151; /* gray-700 */
         }
          .follow-btn.not-following {
             background-color: #3B82F6; /* blue-500 */
@@ -96,14 +95,14 @@
         <!-- App Container (Main structure) -->
         <div id="app-container" class="h-full flex flex-col">
             <header id="app-header" class="p-4 flex justify-between items-center border-b border-gray-200 bg-white z-10">
-                <div></div> <!-- Placeholder for spacing -->
+                 <div></div> <!-- Placeholder for spacing -->
                 <h1 id="header-title" class="text-xl font-bold text-gray-800">Beranda</h1>
-                <button id="notification-btn" class="relative text-gray-600 hover:text-red-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    <span id="notification-dot" class="hidden absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
-                </button>
+                 <button id="notification-btn" class="relative text-gray-600 hover:text-red-500 transition-colors">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                     </svg>
+                     <span id="notification-dot" class="hidden absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+                 </button>
             </header>
             <main class="flex-grow overflow-y-auto bg-gray-50">
                 <div id="page-home" class="page p-4"></div>
@@ -114,14 +113,14 @@
                 <div id="page-profile" class="page p-4"></div>
             </main>
             <nav class="bottom-nav w-full bg-white p-2 border-t border-gray-200">
-                <div class="flex justify-around items-center">
-                    <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors active" data-page="home"><span class="text-xs nav-text">Beranda</span></button>
-                    <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="video"><span class="text-xs nav-text">Video</span></button>
-                    <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="book"><span class="text-xs nav-text">Buku</span></button>
-                    <button id="nav-item-report" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="report"><span class="text-xs nav-text">Laporan</span></button>
-                    <button id="nav-item-konten" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="konten" style="display: none;"><span class="text-xs nav-text">Konten</span></button>
-                    <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="profile"><span class="text-xs nav-text">Profil</span></button>
-                </div>
+                          <div class="flex justify-around items-center">
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors active" data-page="home"><span class="text-xs nav-text">Beranda</span></button>
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="video"><span class="text-xs nav-text">Video</span></button>
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="book"><span class="text-xs nav-text">Buku</span></button>
+                              <button id="nav-item-report" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="report"><span class="text-xs nav-text">Laporan</span></button>
+                              <button id="nav-item-konten" class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="konten" style="display: none;"><span class="text-xs nav-text">Konten</span></button>
+                              <button class="nav-item flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-blue-700 transition-colors" data-page="profile"><span class="text-xs nav-text">Profil</span></button>
+                          </div>
             </nav>
         </div>
     </div>
@@ -171,7 +170,7 @@
             headmasterNip: "196504051988031011",
             teacher: "Asep Surasep, S.Pd.",
         };
-        const localAdmin = { username: 'guru', password: '123' };
+        const localAdmin = { username: 'guru', password: '1234' };
         
         const habits = [
             { name: "Bangun Pagi", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`, hasTimeInput: true },
@@ -208,7 +207,7 @@
         ];
 
         // --- GLOBAL STATE ---
-        let GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6Omal1-oC2Z_F9CC7thtvhlHd2lGJLiJ7L3XpUFbm8ZN_9GZZHPECNouI2SF3Gjlk3Q/exec'; 
+        let GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwUtpHc_hvKQOl0n4gf1AKq3keKbSK8BcTq40ZfyEdVoXviK_MrS4djy7jb0CSKUWRJBg/exec'; 
         let videoCollection = [];
         let bookCollection = [];
         let studentDatabase = {};
@@ -231,20 +230,20 @@
                 GOOGLE_SHEET_URL = savedUrl;
             }
             
-            if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes('AKfycb')) {
-                 loadingText.innerHTML = 'URL Google Sheet belum diatur atau masih menggunakan contoh. Silakan edit variabel `GOOGLE_SHEET_URL` di dalam kode HTML ini dengan URL Web App Anda, lalu segarkan halaman.';
-                 el('loading-view').querySelector('.loader').style.display = 'none';
-                 return;
+            if (GOOGLE_SHEET_URL.includes('GANTI_DENGAN_ID_DEPLOYMENT_ANDA')) {
+                loadingText.innerHTML = 'URL Google Sheet belum diatur. Silakan edit variabel `GOOGLE_SHEET_URL` di dalam kode HTML ini dengan URL Web App Anda, lalu segarkan halaman.';
+                el('loading-view').querySelector('.loader').style.display = 'none';
+                return;
             }
 
             await loadDataFromGoogleSheet();
         });
 
         async function loadDataFromGoogleSheet() {
-            if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes('AKfycb')) return;
+             if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes('GANTI_DENGAN_ID_DEPLOYMENT_ANDA')) return;
             
             loadingView.style.display = 'flex';
-            loadingText.textContent = 'Menghubungkan ke Data Server...';
+            loadingText.textContent = 'Menghubungkan ke Google Sheet...';
             
             try {
                 const res = await fetch(GOOGLE_SHEET_URL + "?action=getAllData", { redirect: 'follow' });
@@ -299,11 +298,11 @@
                 if (existingIcon) existingIcon.remove();
                 if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.outline);
                  if (item.dataset && item.dataset.page === pageId) {
-                    item.classList.add('active');
-                    el('header-title').textContent = item.querySelector('.nav-text').textContent;
-                    const activeIcon = item.querySelector('svg');
-                    if (activeIcon) activeIcon.remove();
-                    if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.filled);
+                     item.classList.add('active');
+                     el('header-title').textContent = item.querySelector('.nav-text').textContent;
+                     const activeIcon = item.querySelector('svg');
+                     if (activeIcon) activeIcon.remove();
+                     if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.filled);
                  }
             });
             const newPage = el(`page-${pageId}`);
@@ -338,21 +337,26 @@
             let contentHTML = '';
 
             if (!currentStudent) {
-                homePage.innerHTML = `<div class="text-center mt-8 p-4"><p class="text-gray-500">Silakan login untuk melihat feed aktivitas dan mengikuti teman Anda.</p><button onclick="switchPage('profile')" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg">Ke Halaman Profil</button></div>`;
-                return;
+                 homePage.innerHTML = `<div class="text-center mt-8 p-4"><p class="text-gray-500">Silakan login untuk melihat feed aktivitas dan mengikuti teman Anda.</p><button onclick="switchPage('profile')" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg">Ke Halaman Profil</button></div>`;
+                 return;
             }
 
             const followingList = currentStudent.following || [];
             // Show posts from people the user follows, plus their own posts.
             const feed = activityFeed.filter(act => followingList.includes(act.nisn) || act.nisn === currentStudent.nisn);
             
-            // [FIXED] Sort feed by date (ISO string), newest first
-            feed.sort((a, b) => new Date(b.date) - new Date(a.date));
+            // Sort feed by date, newest first
+            feed.sort((a, b) => {
+                const dateA = new Date(a.date.split(' ').reverse().join('-').replace(/Juni/g, 'June'));
+                const dateB = new Date(b.date.split(' ').reverse().join('-').replace(/Juni/g, 'June'));
+                return dateB - dateA;
+            });
+
 
             if (feed.length === 0) {
-                contentHTML += `<p class="text-center text-gray-500 mt-8">Feed Anda sepi. Ikuti teman untuk melihat aktivitas mereka di sini.</p>`;
+                 contentHTML += `<p class="text-center text-gray-500 mt-8">Feed Anda sepi. Ikuti teman untuk melihat aktivitas mereka di sini.</p>`;
             } else {
-                contentHTML += feed.map(activity => renderActivityCard(activity)).join('');
+                 contentHTML += feed.map(activity => renderActivityCard(activity)).join('');
             }
             
             // Suggestions
@@ -396,11 +400,6 @@
                 followButtonHTML = `<button onclick="handleFollowToggle('${activity.nisn}')" class="follow-btn ${buttonClass}">${buttonText}</button>`;
             }
 
-            // [FIXED] Format the date for display
-            const displayDate = new Date(activity.date).toLocaleDateString('id-ID', {
-                day: '2-digit', month: 'long', year: 'numeric'
-            });
-
             return `
                 <div class="bg-white border border-gray-200 rounded-lg mb-4 shadow-sm">
                     <div class="flex items-center justify-between p-3 border-b border-gray-200">
@@ -411,7 +410,7 @@
                         ${followButtonHTML}
                     </div>
                     <div class="p-4">
-                        <p class="text-xs text-gray-500 mb-2">${displayDate}</p>
+                        <p class="text-xs text-gray-500 mb-2">${activity.date}</p>
                         <p class="font-semibold text-sm mb-2">Telah menyelesaikan:</p>
                         <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
                             ${activity.completedHabits.map(habit => `<li>${habit}</li>`).join('')}
@@ -431,13 +430,12 @@
 
 
         function renderVideoPage() {
-            const videoPage = el('page-video');
-            if (videoCollection.length === 0) {
-                videoPage.innerHTML = `<p class="text-center text-gray-500 mt-8">Belum ada video yang tersedia.</p>`; return;
-            }
-            videoPage.innerHTML = `<div class="grid grid-cols-1 gap-4">${videoCollection.map(video => `<div class="bg-white rounded-lg shadow-sm overflow-hidden"><div class="relative w-full aspect-video bg-gray-300 flex items-center justify-center"><iframe class="w-full h-full" src="https://www.youtube.com/embed/${video.youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="p-4"><h3 class="font-semibold text-gray-800">${video.title}</h3><p class="text-sm text-gray-500">Video pembelajaran</p></div></div>`).join('')}</div>`;
+             const videoPage = el('page-video');
+               if (videoCollection.length === 0) {
+                   videoPage.innerHTML = `<p class="text-center text-gray-500 mt-8">Belum ada video yang tersedia.</p>`; return;
+               }
+               videoPage.innerHTML = `<div class="grid grid-cols-1 gap-4">${videoCollection.map(video => `<div class="bg-white rounded-lg shadow-sm overflow-hidden"><div class="relative w-full aspect-video bg-gray-300 flex items-center justify-center"><iframe class="w-full h-full" src="https://www.youtube.com/embed/${video.youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="p-4"><h3 class="font-semibold text-gray-800">${video.title}</h3><p class="text-sm text-gray-500">Video pembelajaran</p></div></div>`).join('')}</div>`;
         }
-
         function renderBookPage() {
             const bookPage = el('page-book');
             if (bookCollection.length === 0) {
@@ -450,74 +448,74 @@
             const profilePage = el('page-profile');
             
             if(currentStudent) {
-                const studentData = studentDatabase[currentStudent.nisn];
-                const achievements = studentData.achievements || {};
+                 const studentData = studentDatabase[currentStudent.nisn];
+                 const achievements = studentData.achievements || {};
 
-                let badgeHTML = `
-                    <div class="bg-white rounded-xl shadow-sm p-4">
-                        <h3 class="text-sm font-bold text-gray-800 mb-2">Lencana Sekolah BRIDE</h3>
-                        <div class="grid grid-cols-4 gap-4">
-                `;
+                 let badgeHTML = `
+                     <div class="bg-white rounded-xl shadow-sm p-4">
+                         <h3 class="text-sm font-bold text-gray-800 mb-2">Lencana Sekolah BRIDE</h3>
+                         <div class="grid grid-cols-4 gap-4">
+               `;
                 
                 badgeHTML += badges.map(badge => {
-                    const habitAchievements = achievements[badge.name] || [];
-                    const completions = habitAchievements.length;
-                    const isUnlocked = completions >= 20;
-                    const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
-                    const toastMessage = isUnlocked ? '' : `Selesaikan ${20 - completions} kali lagi untuk membuka lencana ini!`;
-                    const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `alert('${toastMessage}')`;
-                    return `
-                        <div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer">
-                            ${icon}
-                            <span class="text-xs text-center mt-1 font-medium ${isUnlocked ? 'text-gray-700' : 'text-gray-400'}">${badge.name}</span>
-                        </div>
-                    `;
-                }).join('');
+                     const habitAchievements = achievements[badge.name] || [];
+                     const completions = habitAchievements.length;
+                     const isUnlocked = completions >= 20;
+                     const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
+                     const toastMessage = isUnlocked ? '' : `Selesaikan ${20 - completions} kali lagi untuk membuka lencana ini!`;
+                     const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `alert('${toastMessage}')`;
+                     return `
+                         <div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer">
+                             ${icon}
+                             <span class="text-xs text-center mt-1 font-medium ${isUnlocked ? 'text-gray-700' : 'text-gray-400'}">${badge.name}</span>
+                         </div>
+                     `;
+                 }).join('');
 
-                badgeHTML += `</div></div>`;
+                 badgeHTML += `</div></div>`;
 
-                profilePage.innerHTML = `
-                <div class="p-4 space-y-4">
-                    <div class="bg-white p-4 rounded-xl shadow-sm">
-                        <div class="flex items-center">
-                            <img src="${studentData.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
-                            <div class="flex-grow flex justify-around">
-                                <div class="text-center">
-                                    <p class="font-bold text-lg">${studentData.points || 0}</p>
-                                    <p class="text-gray-500 text-sm">Poin</p>
-                                </div>
-                                <div class="text-center">
-                                    <p class="font-bold text-lg">${studentData.followers.length}</p>
-                                    <p class="text-gray-500 text-sm">Pengikut</p>
-                                </div>
-                                <div class="text-center">
-                                    <p class="font-bold text-lg">${studentData.following.length}</p>
-                                    <p class="text-gray-500 text-sm">Mengikuti</p>
-                                </div>
-                            </div>
-                        </div>
-                        <h3 class="text-lg font-bold mt-3">${currentStudent.name}</h3>
-                        <p class="text-gray-500 text-sm">NISN: ${currentStudent.nisn}</p>
-                        <p class="text-xs text-gray-400 mt-1">${schoolData.name} | Kelas ${currentStudent.class} | Wali Kelas: ${schoolData.teacher}</p>
-                    </div>
-                    
-                    ${badgeHTML}
+                 profilePage.innerHTML = `
+                 <div class="p-4 space-y-4">
+                      <div class="bg-white p-4 rounded-xl shadow-sm">
+                          <div class="flex items-center">
+                               <img src="${studentData.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
+                               <div class="flex-grow flex justify-around">
+                                   <div class="text-center">
+                                       <p class="font-bold text-lg">${studentData.points || 0}</p>
+                                       <p class="text-gray-500 text-sm">Poin</p>
+                                   </div>
+                                   <div class="text-center">
+                                       <p class="font-bold text-lg">${studentData.followers.length}</p>
+                                       <p class="text-gray-500 text-sm">Pengikut</p>
+                                   </div>
+                                   <div class="text-center">
+                                       <p class="font-bold text-lg">${studentData.following.length}</p>
+                                       <p class="text-gray-500 text-sm">Mengikuti</p>
+                                   </div>
+                               </div>
+                          </div>
+                           <h3 class="text-lg font-bold mt-3">${currentStudent.name}</h3>
+                           <p class="text-gray-500 text-sm">NISN: ${currentStudent.nisn}</p>
+                           <p class="text-xs text-gray-400 mt-1">${schoolData.name} | Kelas ${currentStudent.class} | Wali Kelas: ${schoolData.teacher}</p>
+                      </div>
+                     
+                      ${badgeHTML}
 
-                    <div class="bg-white rounded-xl shadow-sm">
-                        <h3 class="px-4 pt-4 pb-2 text-sm font-bold text-gray-800">Unduh Laporan</h3>
-                        <ul class="text-sm text-gray-700">
-                            <li onclick="generateParentReflectionPDF(currentStudent)" class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                                <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                    <span class="font-medium">Refleksi Orang Tua</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                        </ul>
-                    </div>
+                     <div class="bg-white rounded-xl shadow-sm">
+                          <h3 class="px-4 pt-4 pb-2 text-sm font-bold text-gray-800">Unduh Laporan</h3>
+                          <ul class="text-sm text-gray-700">
+                               <li onclick="generateParentReflectionPDF(currentStudent)" class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
+                                   <div class="flex items-center gap-4">
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                       <span class="font-medium">Refleksi Orang Tua</span>
+                                   </div>
+                                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                               </li>
+                           </ul>
+                      </div>
 
-                    <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
-                </div>`;
+                       <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
+                 </div>`;
             } else if (currentAdmin) {
                 profilePage.innerHTML = `
                     <div class="p-4">
@@ -530,18 +528,18 @@
                     </div>
                 `;
             } else {
-                profilePage.innerHTML = `
-                <div class="p-4">
-                    <div class="bg-white p-6 rounded-xl shadow-md text-center">
-                        <img src="https://placehold.co/100x100/CBD5E1/FFFFFF?text=?" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
-                        <h3 class="text-lg font-bold">Anda Belum Login</h3>
-                        <p class="text-gray-500 mb-4">Silakan login untuk melanjutkan.</p>
-                        <div class="space-y-3">
-                            <button id="show-student-login-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg">Login sebagai Siswa</button>
-                            <button id="show-admin-login-btn" class="w-full bg-gray-700 text-white py-2 rounded-lg">Login sebagai Guru</button>
-                        </div>
-                    </div>
-                </div>`;
+                 profilePage.innerHTML = `
+                 <div class="p-4">
+                      <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                           <img src="https://placehold.co/100x100/CBD5E1/FFFFFF?text=?" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
+                           <h3 class="text-lg font-bold">Anda Belum Login</h3>
+                           <p class="text-gray-500 mb-4">Silakan login untuk melanjutkan.</p>
+                           <div class="space-y-3">
+                               <button id="show-student-login-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg">Login sebagai Siswa</button>
+                               <button id="show-admin-login-btn" class="w-full bg-gray-700 text-white py-2 rounded-lg">Login sebagai Guru</button>
+                           </div>
+                      </div>
+                 </div>`;
                 el('show-student-login-btn').addEventListener('click', () => showLoginModal('student'));
                 el('show-admin-login-btn').addEventListener('click', () => showLoginModal('admin'));
             }
@@ -585,13 +583,13 @@
                     <section class="bg-white p-4 rounded-xl shadow-sm">
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-lg font-bold text-gray-800">Kelola Buku</h2>
-                            <button onclick="showContentModal('book')" class="bg-blue-500 text-white text-sm font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1">
+                             <button onclick="showContentModal('book')" class="bg-blue-500 text-white text-sm font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
                                 Tambah
                             </button>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
-                            ${bookCollection.map(book => `
+                             ${bookCollection.map(book => `
                                 <div class="rounded-lg overflow-hidden border border-gray-200">
                                     <img src="${book.cover}" alt="${book.title}" onerror="this.src='https://placehold.co/200x280/CCCCCC/FFFFFF?text=No+Image'" class="w-full h-32 object-cover">
                                     <div class="p-2">
@@ -669,14 +667,14 @@
                     const studentData = { nisn: selectedNisn, ...studentDatabase[selectedNisn] };
                     downloadButtonsContainer.innerHTML = `
                         <ul class="text-sm text-gray-700 -mx-4">
-                            <li onclick='generateParentReflectionPDF(${JSON.stringify(studentData)})' class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
-                               <div class="flex items-center gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                                    <span class="font-medium">Refleksi Orang Tua</span>
-                               </div>
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                            </li>
-                        </ul>
+                              <li onclick='generateParentReflectionPDF(${JSON.stringify(studentData)})' class="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer border-t">
+                                 <div class="flex items-center gap-4">
+                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm-3 5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                     <span class="font-medium">Refleksi Orang Tua</span>
+                                 </div>
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                             </li>
+                           </ul>
                     `;
                     downloadButtonsContainer.classList.remove('hidden');
                 } else {
@@ -697,7 +695,7 @@
                 const timeInputHTML = habit.hasTimeInput ? `<input type="time" id="${habitId}-time" class="input-field text-sm w-28 mx-2 p-1.5 hidden">` : '';
                 return `<div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200"><div class="flex items-center gap-3 flex-grow"><span class="text-gray-500">${habit.icon}</span><span class="text-gray-700 font-medium">${habit.name}</span></div>${timeInputHTML}<div class="relative inline-block w-10 mr-2 align-middle select-none"><input type="checkbox" name="${habitId}" id="${habitId}" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/><label for="${habitId}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label></div></div>`;
             }).join('');
-            container.innerHTML = `<form id="habit-form"><h2 class="font-bold text-lg mb-3 text-center">Isi Laporan Hari Ini</h2><p class="text-center text-gray-500 mb-4">${new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}</p><div class="space-y-4">${habitHTML}</div><div class="mt-6"><button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-lg transition">Posting Aktivitas</button></div></form>`;
+            container.innerHTML = `<form id="habit-form"><h2 class="font-bold text-lg mb-3 text-center">Isi Laporan Hari Ini</h2><p class="text-center text-gray-500 mb-4">${new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}</p><div class="space-y-4">${habitHTML}</div><div class="mt-6"><button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-lg">Posting Aktivitas</button></div></form>`;
             container.querySelector('#habit-form').addEventListener('submit', handleHabitFormSubmit);
             container.querySelectorAll('.toggle-checkbox').forEach(toggle => {
                 toggle.addEventListener('change', (event) => {
@@ -753,46 +751,27 @@
             updateNavVisibility();
             switchPage('profile');
         }
-        
-        // [FIXED] Function to handle habit form submission with server response check
         async function handleHabitFormSubmit(e) {
             e.preventDefault();
-            const form = e.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-
-            const completedHabits = habits
-                .filter(h => el(h.name.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'dan')).checked)
-                .map(h => h.name);
-
-            if (completedHabits.length === 0) {
-                alert('Pilih minimal satu aktivitas.');
-                return;
-            }
-
-            // Disable button and show loading state
-            submitButton.disabled = true;
-            submitButton.innerHTML = `<span class="loader-small"></span> Mengirim...`;
-
-            const newActivity = {
-                id: `act_${Date.now()}`,
-                nisn: currentStudent.nisn,
-                name: currentStudent.name,
-                class: currentStudent.class,
-                date: new Date().toISOString(), // Use ISO string for robust parsing
-                completedHabits,
-                avatar: currentStudent.avatar,
-                likes: 0,
-                likedBy: []
-            };
-
-            // Call server to save activity
-            const result = await postData({ action: 'saveActivity', payload: newActivity });
-
-            if (result.status === 'success') {
-                activityFeed.unshift(newActivity); // Add to the beginning of the local feed
-
+            const completedHabits = habits.filter(h => el(h.name.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'dan')).checked).map(h => h.name);
+            if (completedHabits.length > 0) {
+                const newActivity = { 
+                    id: `act_${Date.now()}`, 
+                    nisn: currentStudent.nisn, 
+                    name: currentStudent.name, 
+                    class: currentStudent.class, 
+                    date: new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'}), 
+                    completedHabits, 
+                    avatar: currentStudent.avatar, 
+                    likes: 0, 
+                    likedBy: [] 
+                };
+                activityFeed.push(newActivity);
+                await postData({ action: 'saveActivity', payload: newActivity });
+                
                 const studentData = studentDatabase[currentStudent.nisn];
                 const currentDate = new Date().toISOString().slice(0, 10);
+
                 const pointsEarned = completedHabits.length;
                 if(!studentData.points) studentData.points = 0;
                 studentData.points += pointsEarned;
@@ -810,25 +789,21 @@
                 await postData({ action: 'updateStudentData', payload: { nisn: currentStudent.nisn, ...studentData }});
 
                 if (completedHabits.length === habits.length) {
-                    notifications.unshift({ type: 'badge', actorName: currentStudent.name, actorAvatar: currentStudent.avatar, timestamp: new Date() });
+                    notifications.unshift({
+                        type: 'badge',
+                        actorName: currentStudent.name,
+                        actorAvatar: currentStudent.avatar,
+                        timestamp: new Date()
+                    });
                     updateNotificationUI(true);
                 }
                 
-                alert('Aktivitas berhasil diposting!');
                 switchPage('home');
-
-            } else if (result.status === 'skipped') {
-                alert(result.message || 'Anda sudah memposting aktivitas untuk hari ini.');
             } else {
-                alert(`Gagal memposting aktivitas: ${result.message || 'Terjadi kesalahan.'}`);
+                alert('Pilih minimal satu aktivitas.');
             }
-            
-            // Re-enable button regardless of outcome
-            submitButton.disabled = false;
-            submitButton.innerHTML = `Posting Aktivitas`;
         }
-
-        
+       
         function showBadgeDetailsModal(habitName) {
             const badge = badges.find(b => b.name === habitName);
             const studentData = studentDatabase[currentStudent.nisn];
@@ -843,7 +818,7 @@
             const modalContent = `
                 <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-xs text-center relative">
                     <button onclick="el('badge-details-modal').classList.add('hidden')" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                     <div class="mx-auto w-20 h-20">${badge.unlockedIcon}</div>
                     <h3 class="text-lg font-bold mt-4">${badge.name}</h3>
@@ -865,56 +840,35 @@
             modalContainer.classList.remove('hidden');
         }
 
-        // [FIXED] Improved like handling
-        async function handleLikePost(activityId) {
+        function handleLikePost(activityId) {
             if (!currentStudent) return;
-
             const activityIndex = activityFeed.findIndex(activity => activity.id === activityId);
             if (activityIndex === -1) return;
-            
             const activity = activityFeed[activityIndex];
-            const likerNisn = currentStudent.nisn;
-            const wasLiked = activity.likedBy.includes(likerNisn);
-
-            // Optimistic update for UI responsiveness
-            if (wasLiked) {
+            const studentNisn = currentStudent.nisn;
+            if (activity.likedBy.includes(studentNisn)) {
                 activity.likes--;
-                activity.likedBy = activity.likedBy.filter(nisn => nisn !== likerNisn);
+                activity.likedBy = activity.likedBy.filter(nisn => nisn !== studentNisn);
             } else {
                 activity.likes++;
-                activity.likedBy.push(likerNisn);
-            }
-            renderHomePage(); // Re-render immediately
-
-            // Call server to persist change
-            const result = await postData({ action: 'likeActivity', payload: { activityId, likerNisn } });
-
-            if (result && result.status === 'success') {
-                // Server confirmed, update local data with source of truth
-                activity.likes = result.newLikes;
-                activity.likedBy = result.likedBy;
-                
-                // Add notification only after successful confirmation
-                if (!wasLiked && activity.nisn !== likerNisn) {
-                    notifications.unshift({ type: 'like', actor: studentDatabase[currentStudent.nisn], postOwner: studentDatabase[activity.nisn], timestamp: new Date() });
+                activity.likedBy.push(studentNisn);
+                if(activity.nisn !== currentStudent.nisn) {
+                    notifications.unshift({ 
+                        type: 'like', 
+                        actor: studentDatabase[currentStudent.nisn],
+                        postOwner: studentDatabase[activity.nisn],
+                        timestamp: new Date() 
+                    });
                     updateNotificationUI(true);
                 }
-            } else {
-                // Rollback on failure
-                if (wasLiked) { // It was optimistically unliked
-                    activity.likes++;
-                    activity.likedBy.push(likerNisn);
-                } else { // It was optimistically liked
-                    activity.likes--;
-                    activity.likedBy = activity.likedBy.filter(nisn => nisn !== likerNisn);
-                }
-                alert('Gagal menyukai postingan.');
             }
-            renderHomePage(); // Final re-render to ensure sync
+            activityFeed[activityIndex] = activity;
+            // Update this specific activity in the sheet (optional, for real-time likes)
+            // postData({ action: 'updateActivity', payload: activity });
+            renderHomePage(); 
         }
 
-        // [FIXED] Improved follow handling
-        async function handleFollowToggle(targetNisn) {
+        function handleFollowToggle(targetNisn) {
             if (!currentStudent) return;
             
             const currentUserNisn = currentStudent.nisn;
@@ -924,30 +878,31 @@
             if (!currentUserData || !targetUserData) return;
 
             const isFollowing = currentUserData.following.includes(targetNisn);
-            const newFollowingState = !isFollowing;
 
-            // Optimistic Update
-            if (newFollowingState) { // Follow
-                currentUserData.following.push(targetNisn);
-                targetUserData.followers.push(currentUserNisn);
-            } else { // Unfollow
+            if(isFollowing) {
                 currentUserData.following = currentUserData.following.filter(nisn => nisn !== targetNisn);
                 targetUserData.followers = targetUserData.followers.filter(nisn => nisn !== currentUserNisn);
+            } else {
+                currentUserData.following.push(targetNisn);
+                targetUserData.followers.push(currentUserNisn);
+                notifications.unshift({ 
+                    type: 'follow', 
+                    actor: studentDatabase[currentUserNisn], 
+                    followedNisn: targetNisn, 
+                    timestamp: new Date() 
+                });
+                updateNotificationUI(true);
             }
 
-            // Update local state and re-render
             studentDatabase[currentUserNisn] = currentUserData;
             studentDatabase[targetNisn] = targetUserData;
             currentStudent = { ...currentStudent, ...currentUserData };
-            renderHomePage();
             
-            // Persist to server
-            const result = await postData({ action: 'updateFollow', payload: { followerNisn: currentUserNisn, followedNisn: targetNisn, isFollowing: newFollowingState } });
+            // Update both users in the sheet
+            // postData({ action: 'updateBulkStudents', payload: [currentUserData, targetUserData] });
 
-            if(result.status === 'success' && newFollowingState){
-                 notifications.unshift({ type: 'follow', actor: studentDatabase[currentUserNisn], followedNisn: targetNisn, timestamp: new Date() });
-                 updateNotificationUI(true);
-            }
+            const activePageId = document.querySelector('.page.active').id.replace('page-', '');
+            switchPage(activePageId);
         }
         
         // --- PDF GENERATION FUNCTIONS (UPDATED) ---
@@ -1000,7 +955,7 @@
             const pageWidth = doc.internal.pageSize.getWidth();
 
             doc.setFontSize(10);
-            doc.text(`${schoolData.city}, ${formattedDate}`, pageWidth - marginRight, yPos, { align: 'right' });
+            doc.text(`Indramayu, ${formattedDate}`, pageWidth - marginRight, yPos, { align: 'right' });
             
             yPos += 15;
             doc.text("Guru Kelas/Wali Kelas,", pageWidth - marginRight, yPos, { align: 'right' });
@@ -1060,8 +1015,8 @@
                     <form id="content-form" class="space-y-4">
                         ${formFields}
                         <div class="flex justify-end gap-3 pt-4">
-                            <button type="button" onclick="el('content-modal').classList.add('hidden')" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300">Batal</button>
-                            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Simpan</button>
+                             <button type="button" onclick="el('content-modal').classList.add('hidden')" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300">Batal</button>
+                             <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -1116,8 +1071,8 @@
                 }
                 await postData({ action: 'deleteContent', payload: { type: type, id: id }});
                 renderKontenPage();
-                if (el('page-video').classList.contains('active')) renderVideoPage();
-                if (el('page-book').classList.contains('active')) renderBookPage();
+                 if (el('page-video').classList.contains('active')) renderVideoPage();
+                 if (el('page-book').classList.contains('active')) renderBookPage();
             }
         }
 
@@ -1134,7 +1089,6 @@
             } catch (error) {
                 console.error('Failed to post data:', error);
                 alert("Gagal menyimpan data ke server.");
-                return { status: 'error', message: error.message }; // Return error object
             }
         }
         
@@ -1193,7 +1147,7 @@
             const relevantNotifications = notifications.filter(notif => {
                 if (notif.type === 'badge' && notif.actorName === currentStudent.name) return true;
                 if (notif.type === 'like' && notif.postOwner.nisn === currentStudent.nisn) return true;
-                 if (notif.type === 'follow' && notif.followedNisn === currentStudent.nisn) return true;
+                 if (notif.type === 'follow' && notif.actor.nisn !== currentStudent.nisn && !currentStudent.following.includes(notif.actor.nisn) ) return true; // Show follow notifs from non-followers
                 return false;
             }).sort((a,b) => b.timestamp - a.timestamp);
             
@@ -1235,9 +1189,9 @@
                         }
                         return `
                         <div class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg">
-                            <img src="${avatarUrl}" class="w-10 h-10 rounded-full">
-                            <p class="text-sm text-gray-800 flex-grow">${message}</p>
-                            <span class="text-xs text-gray-400">${timeAgo(notif.timestamp)}</span>
+                           <img src="${avatarUrl}" class="w-10 h-10 rounded-full">
+                           <p class="text-sm text-gray-800 flex-grow">${message}</p>
+                           <span class="text-xs text-gray-400">${timeAgo(notif.timestamp)}</span>
                         </div>`;
                     }).join('');
                 }
