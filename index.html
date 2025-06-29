@@ -79,7 +79,7 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
         }
-        main { background-color: var(--bg-secondary); }
+        main:not(#splash-screen) { background-color: var(--bg-secondary); }
         #app-container, #qr-scanner-view { display: none; }
         .page { display: none; animation: fadeIn 0.3s ease-in-out; }
         .page.active { display: block; }
@@ -116,22 +116,11 @@
 
     </style>
 </head>
-<body class="dark:bg-black">
+<body class="dark:bg-black overflow-hidden">
 
     <!-- Splash Screen Container -->
     <main id="splash-screen" class="fixed inset-0 z-[100] h-screen w-screen flex flex-col items-center justify-center transition-opacity duration-500 p-6 bg-gray-50 dark:bg-black">
         
-        <div id="theme-switcher" class="absolute top-4 right-4 z-20">
-            <button onclick="toggleTheme()" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-            </button>
-        </div>
-
         <div class="flex flex-col items-center text-center gap-6">
             <!-- Logo Sekolah -->
             <img id="logo" 
@@ -150,6 +139,11 @@
                 Pemantauan Tujuh Kebiasaan Anak Indonesia Hebat
             </p>
         </div>
+        
+        <!-- Loading status text on splash screen -->
+        <p id="loading-status-splash" class="absolute bottom-24 text-sm text-gray-400 dark:text-gray-500 mt-8 opacity-0">
+            <!-- Text will be set by JS -->
+        </p>
 
         <!-- Nama Sekolah di Bagian Bawah -->
         <div id="school-name" class="absolute bottom-10 text-center px-4 opacity-0">
@@ -170,7 +164,7 @@
         <!-- Initial Loading View -->
         <div id="loading-view" class="flex flex-col items-center justify-center h-full" style="background-color: var(--bg-primary);">
             <div class="loader"></div>
-            <p id="loading-text" class="mt-4 text-gray-600 dark:text-gray-400 text-center px-4">Memuat data...</p>
+            <p id="loading-text" class="mt-4 text-gray-600 dark:text-gray-400 text-center px-4">Menyiapkan aplikasi...</p>
         </div>
         
         <!-- QR Code Scanner View -->
@@ -235,6 +229,7 @@
         const appTitle = document.getElementById('app-title');
         const appSubtitle = document.getElementById('app-subtitle');
         const schoolName = document.getElementById('school-name');
+        const loadingStatusSplash = document.getElementById('loading-status-splash');
 
         // Initial theme application for splash screen
         applyInitialTheme();
@@ -244,12 +239,20 @@
         setTimeout(() => { appTitle.classList.add('fade-in-up'); }, 800);
         setTimeout(() => { appSubtitle.classList.add('fade-in-up'); }, 1000);
         setTimeout(() => { schoolName.classList.add('fade-in-up'); }, 1300);
+        
+        // Animate the loading status text
+        setTimeout(() => {
+            loadingStatusSplash.textContent = "Menghubungkan ke Data Server...";
+            loadingStatusSplash.classList.add('fade-in-up');
+        }, 1600);
+
 
         // Fade out and transition to main app
         setTimeout(() => { splashScreen.classList.add('fade-out'); }, 3500); 
 
         setTimeout(() => {
             splashScreen.style.display = 'none';
+            document.body.classList.remove('overflow-hidden');
             // Start loading the main application's data
             loadDataFromGoogleSheet();
         }, 4000); 
@@ -389,7 +392,6 @@
         }
         
         loadingView.style.display = 'flex';
-        loadingText.textContent = 'Menghubungkan ke Data Server...';
         
         try {
             const res = await fetch(GOOGLE_SHEET_URL + "?action=getAllData", { redirect: 'follow' });
