@@ -13,8 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- QR Code & PDF Libraries -->
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <!-- PDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf-autotable.min.js"></script>
 
@@ -75,12 +74,12 @@
         }
 
         /* [MAIN APP STYLES] */
-        #app-shell, .modal-content, #notification-page-container, #qr-scanner-view, #book-details-modal-content {
+        #app-shell, .modal-content, #notification-page-container, #book-details-modal-content {
             background-color: var(--bg-primary);
             color: var(--text-primary);
         }
         main:not(#splash-screen) { background-color: var(--bg-secondary); }
-        #app-container, #qr-scanner-view { display: none; }
+        #app-container { display: none; }
         .page { display: none; animation: fadeIn 0.3s ease-in-out; }
         .page.active { display: block; }
         @keyframes fadeIn {
@@ -113,6 +112,39 @@
         .category-btn { scroll-snap-align: start; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* [GLASSMORPHISM LOGIN STYLES] */
+        .glass-modal-content {
+            background: rgba(31, 41, 55, 0.25); /* Darker translucent background for better contrast on light/dark backgrounds */
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem; /* 24px */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            color: white; /* Text color needs to be light for contrast */
+        }
+
+        .dark .glass-modal-content {
+            background: rgba(17, 24, 39, 0.4); /* Slightly different dark mode glass */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 0.75rem; /* 12px */
+            transition: background 0.2s, border 0.2s;
+        }
+
+        .glass-input:focus {
+             background: rgba(255, 255, 255, 0.2);
+             border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
 
     </style>
 </head>
@@ -167,14 +199,6 @@
             <p id="loading-text" class="mt-4 text-gray-600 dark:text-gray-400 text-center px-4">Menyiapkan aplikasi...</p>
         </div>
         
-        <!-- QR Code Scanner View -->
-        <div id="qr-scanner-view" class="fixed inset-0 z-50 flex flex-col p-4">
-            <h2 class="text-xl font-bold text-center mb-4">Pindai QR Code Siswa</h2>
-            <div id="qr-reader" class="w-full flex-grow"></div>
-            <button onclick="hideQrScanner()" class="w-full mt-4 bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Batal</button>
-        </div>
-
-
         <!-- App Container (Main structure) -->
         <div id="app-container" class="h-full flex flex-col">
             <header id="app-header" class="p-4 flex justify-between items-center border-b z-10" style="background-color: var(--bg-primary); border-color: var(--border-color);">
@@ -290,7 +314,7 @@
     };
 
     // --- KONFIGURASI ---
-    const schoolData = {
+    let schoolData = {
         name: "SDN Contoh 1",
         npsn: "12345678",
         province: "Jawa Barat",
@@ -345,7 +369,6 @@
     let currentAdmin = null;
     let notifications = []; 
     let hasUnreadNotifications = false;
-    let html5QrCode; 
 
     // --- MAIN ELEMENTS ---
     const el = id => document.getElementById(id);
@@ -691,18 +714,18 @@
         const modal = el('book-details-modal');
         modal.innerHTML = `
             <div id="book-details-modal-content" class="w-full rounded-t-2xl p-4 transition-transform transform translate-y-full">
-                  <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
-                  <div class="flex gap-4 items-start">
+                 <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
+                 <div class="flex gap-4 items-start">
                     <img src="${book.cover}" onerror="this.src='https://placehold.co/100x140/CCCCCC/FFFFFF?text=Err'" class="w-24 h-36 object-cover rounded-lg shadow-lg flex-shrink-0">
                     <div class="flex-grow">
                         <h3 class="font-bold text-lg">${book.title}</h3>
                         <p class="text-sm font-medium text-blue-500 mb-2">${book.category}</p>
                         <p class="text-sm" style="color: var(--text-secondary);">${book.description}</p>
                     </div>
-                  </div>
-                  <a href="${book.url}" target="_blank" class="block w-full text-center bg-blue-500 text-white font-bold py-3 px-4 rounded-lg mt-6 hover:bg-blue-600 transition">
+                 </div>
+                 <a href="${book.url}" target="_blank" class="block w-full text-center bg-blue-500 text-white font-bold py-3 px-4 rounded-lg mt-6 hover:bg-blue-600 transition">
                     Baca Sekarang
-                  </a>
+                 </a>
             </div>
         `;
         modal.classList.remove('hidden');
@@ -714,8 +737,8 @@
 
         modal.addEventListener('click', (e) => {
              if (e.target.id === 'book-details-modal') {
-                modalContent.classList.add('translate-y-full');
-                setTimeout(() => modal.classList.add('hidden'), 300);
+                 modalContent.classList.add('translate-y-full');
+                 setTimeout(() => modal.classList.add('hidden'), 300);
              }
         });
     }
@@ -776,6 +799,12 @@
                      <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
                         <h3 class="text-sm font-bold mb-2">Pengaturan</h3>
                         <div id="settings-container"></div>
+                        <div class="border-t pt-4 mt-4" style="border-color: var(--border-color);">
+                           <button onclick="showSchoolDataModal()" class="flex items-center justify-between w-full py-2">
+                              <span class="font-medium">Edit Data Sekolah</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                           </button>
+                        </div>
                     </div>
                     <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
                 </div>
@@ -791,13 +820,11 @@
                     <div class="space-y-3">
                         <button id="show-student-login-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg">Login sebagai Siswa</button>
                         <button id="show-admin-login-btn" class="w-full bg-gray-700 text-white py-2 rounded-lg">Login sebagai Guru</button>
-                        <button id="scan-qr-btn" class="w-full bg-green-500 text-white py-2 rounded-lg">Pindai QR untuk Login</button>
                     </div>
                 </div>
             </div>`;
             el('show-student-login-btn').addEventListener('click', () => showLoginModal('student'));
             el('show-admin-login-btn').addEventListener('click', () => showLoginModal('admin'));
-            el('scan-qr-btn').addEventListener('click', showQrScanner);
         }
     }
 
@@ -1000,13 +1027,44 @@
         });
     }
     
+    // --- LOGIN MODAL (UPDATED WITH GLASSMORPHISM) ---
     function showLoginModal(type) {
         const loginModal = el('login-modal');
-        loginModal.innerHTML = `<div class="p-8 rounded-lg shadow-xl w-full max-w-sm modal-content"><h2 class="text-xl font-bold mb-4 text-center">${type === 'student' ? 'Login Siswa' : 'Login Guru'}</h2><form id="login-form-modal">${ type === 'student' ? `<input type="number" id="nisn-input" class="input-field text-center" placeholder="Masukkan NISN Anda" required>` : `<input type="text" id="admin-username" class="input-field mb-2" placeholder="Nama Pengguna" required><input type="password" id="admin-password" class="input-field" placeholder="Kata Sandi" required>` }<button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg mt-4">Masuk</button><button type="button" class="close-modal-btn w-full bg-gray-200 dark:bg-gray-700 mt-2 py-2 rounded-lg">Batal</button></form></div>`;
+        const title = type === 'student' ? 'Login Siswa' : 'Login Guru';
+        const formContent = type === 'student'
+            ? `<div class="mb-4">
+                   <label for="nisn-input" class="block text-sm font-medium text-gray-200 mb-2">NISN</label>
+                   <input type="number" id="nisn-input" class="w-full p-3 text-center glass-input focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan NISN Anda" required>
+               </div>`
+            : `<div class="mb-4">
+                   <label for="admin-username" class="block text-sm font-medium text-gray-200 mb-2">Nama Pengguna</label>
+                   <input type="text" id="admin-username" class="w-full p-3 glass-input focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="guru" required>
+               </div>
+               <div class="mb-6">
+                   <label for="admin-password" class="block text-sm font-medium text-gray-200 mb-2">Kata Sandi</label>
+                   <input type="password" id="admin-password" class="w-full p-3 glass-input focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="••••••••" required>
+               </div>`;
+
+        loginModal.innerHTML = `
+            <div class="glass-modal-content p-8 shadow-xl w-full max-w-sm text-white">
+                <h2 class="text-3xl font-bold mb-2 text-center">${title}</h2>
+                <p class="text-center text-gray-300 mb-8">Selamat datang kembali!</p>
+                <form id="login-form-modal">
+                    ${formContent}
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition duration-300">
+                        Masuk
+                    </button>
+                    <button type="button" class="close-modal-btn w-full text-center text-gray-300 mt-4 text-sm hover:text-white">
+                        Batal
+                    </button>
+                </form>
+            </div>`;
+
         loginModal.querySelector('.close-modal-btn').addEventListener('click', () => loginModal.classList.add('hidden'));
         loginModal.querySelector('#login-form-modal').addEventListener('submit', (e) => handleLoginSubmit(e, type));
         loginModal.classList.remove('hidden');
     }
+
     async function handleLoginSubmit(e, type) {
         e.preventDefault();
         let nisnToLogin;
@@ -1062,7 +1120,7 @@
         const form = e.target;
         const submitButton = form.querySelector('button[type="submit"]');
 
-        const todayString = formatDateForSheet(new Date()); // e.g., "30/06/2025"
+        const todayString = formatDateForSheet(new Date()); // e.g., "01/07/2025"
         const todaysPost = Object.values(activityFeed).find(act => 
             act.nisn === currentStudent.nisn && act.date === todayString
         );
@@ -1279,6 +1337,79 @@
         doc.text("(___________________)", 40, yPos);
         
         doc.save(`refleksi-orang-tua-${student.nisn}.pdf`);
+    }
+
+    // --- SCHOOL DATA EDIT MODAL ---
+    function showSchoolDataModal() {
+        const modal = el('content-modal'); // Re-using the content modal container
+        const title = 'Edit Data Sekolah';
+
+        const formFields = `
+            <div class="space-y-2">
+                <label for="school-name-input" class="block text-sm font-medium">Nama Sekolah</label>
+                <input type="text" id="school-name-input" value="${schoolData.name}" class="input-field" required>
+            </div>
+            <div class="space-y-2">
+                <label for="school-npsn-input" class="block text-sm font-medium">NPSN</label>
+                <input type="text" id="school-npsn-input" value="${schoolData.npsn}" class="input-field" required>
+            </div>
+            <div class="space-y-2">
+                <label for="school-province-input" class="block text-sm font-medium">Provinsi</label>
+                <input type="text" id="school-province-input" value="${schoolData.province}" class="input-field" required>
+            </div>
+            <div class="space-y-2">
+                <label for="school-city-input" class="block text-sm font-medium">Kota/Kabupaten</label>
+                <input type="text" id="school-city-input" value="${schoolData.city}" class="input-field" required>
+            </div>
+            <div class="space-y-2">
+                <label for="school-headmaster-input" class="block text-sm font-medium">Nama Kepala Sekolah</label>
+                <input type="text" id="school-headmaster-input" value="${schoolData.headmaster}" class="input-field" required>
+            </div>
+            <div class="space-y-2">
+                <label for="school-headmasternip-input" class="block text-sm font-medium">NIP Kepala Sekolah</label>
+                <input type="text" id="school-headmasternip-input" value="${schoolData.headmasterNip}" class="input-field" required>
+            </div>
+            <div class="space-y-2">
+                <label for="school-teacher-input" class="block text-sm font-medium">Nama Guru</label>
+                <input type="text" id="school-teacher-input" value="${schoolData.teacher}" class="input-field" required>
+            </div>
+        `;
+
+        modal.innerHTML = `
+            <div class="p-6 rounded-lg shadow-xl w-full max-w-sm modal-content max-h-[90vh] overflow-y-auto">
+                <h2 class="text-xl font-bold mb-4">${title}</h2>
+                <form id="school-data-form" class="space-y-4">
+                    ${formFields}
+                    <div class="flex justify-end gap-3 pt-4">
+                        <button type="button" onclick="el('content-modal').classList.add('hidden')" class="bg-gray-200 dark:bg-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">Batal</button>
+                        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        modal.classList.remove('hidden');
+        el('school-data-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSchoolDataSubmit();
+        });
+    }
+
+    function handleSchoolDataSubmit() {
+        // Read values from the modal form
+        schoolData.name = el('school-name-input').value;
+        schoolData.npsn = el('school-npsn-input').value;
+        schoolData.province = el('school-province-input').value;
+        schoolData.city = el('school-city-input').value;
+        schoolData.headmaster = el('school-headmaster-input').value;
+        schoolData.headmasterNip = el('school-headmasternip-input').value;
+        schoolData.teacher = el('school-teacher-input').value;
+
+        // In a real application, you would post this data to your server/backend.
+        // For this example, the changes are only stored locally for the session.
+        // e.g., await postData({ action: 'updateSchoolData', payload: schoolData });
+
+        alert('Data sekolah berhasil diperbarui!');
+        el('content-modal').classList.add('hidden');
     }
     
     function showContentModal(type, id = null) {
@@ -1520,34 +1651,6 @@
             }
         }
         listContainer.innerHTML = contentHTML;
-    }
-
-    // --- QR CODE SCANNER LOGIC ---
-    function showQrScanner() {
-        const scannerView = el('qr-scanner-view');
-        scannerView.style.display = 'flex';
-
-        html5QrCode = new Html5Qrcode("qr-reader");
-        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-            hideQrScanner();
-            loginWithNisn(decodedText);
-        };
-        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-        // Request camera and start scanning
-        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
-            .catch(err => {
-                alert("Gagal memulai kamera. Pastikan Anda memberikan izin akses kamera.");
-                console.error("Tidak dapat memulai QR scanner", err);
-                hideQrScanner();
-            });
-    }
-    
-    function hideQrScanner() {
-        if (html5QrCode && html5QrCode.isScanning) {
-            html5QrCode.stop().catch(err => console.error("Gagal menghentikan scanner.", err));
-        }
-        el('qr-scanner-view').style.display = 'none';
     }
     
     </script>
