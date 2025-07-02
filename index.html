@@ -236,8 +236,9 @@
         <!-- Pull to Refresh Indicator -->
         <div id="pull-to-refresh-indicator">
             <div id="refresh-icon">
-                <svg class="h-6 w-6 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.181-3.183m-4.991-2.696L7.985 5.644m0 0l-3.182 3.182m3.182-3.182l4.992 0" />
+                <!-- Icon will be dynamically set by JS, starting with home -->
+                <svg aria-label="Beranda" class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
             </div>
         </div>
@@ -418,6 +419,7 @@
     let currentAdmin = null;
     let notifications = []; 
     let hasUnreadNotifications = false;
+    let currentPageId = 'home';
 
     // --- MAIN ELEMENTS ---
     const el = id => document.getElementById(id);
@@ -453,6 +455,26 @@
         return new Date(timestamp).toLocaleDateString('id-ID', {
             weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
         }).replace(/\./g, ':');
+    }
+
+    // --- PULL TO REFRESH ICON UPDATE ---
+    function updateRefreshIcon() {
+        const refreshIconContainer = el('refresh-icon');
+        const iconSet = icons[currentPageId];
+        if (refreshIconContainer && iconSet && iconSet.outline) {
+            // Use the outline icon for the refresh indicator
+            refreshIconContainer.innerHTML = iconSet.outline;
+            
+            // The SVGs in the `icons` object might have their own classes (e.g., h-7, w-7).
+            // We need to ensure the refresh icon has a consistent size.
+            const svg = refreshIconContainer.querySelector('svg');
+            if (svg) {
+                // Remove existing size classes and add the correct ones for the refresh icon
+                svg.classList.remove('h-7', 'w-7');
+                svg.classList.add('h-6', 'w-6', 'text-gray-500', 'dark:text-gray-400');
+                svg.style.transition = 'transform 0.3s'; // Ensure transition is applied for rotation
+            }
+        }
     }
 
     // --- INITIALIZATION ---
@@ -526,6 +548,9 @@
         if (!forceRerender && currentPage && currentPage.id === `page-${pageId}`) {
             return; // Don't re-render if it's the same page, unless forced
         }
+        
+        currentPageId = pageId;
+        updateRefreshIcon();
 
         insertIcons(); 
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -1371,7 +1396,10 @@
                 ptrIndicator.classList.add('visible');
                 const rotation = Math.min(pullDistance, pullThreshold) / pullThreshold * 180;
                 refreshIcon.style.transform = `translateY(${pullDistance / 2}px)`;
-                refreshIcon.querySelector('svg').style.transform = `rotate(${rotation}deg)`;
+                const svg = refreshIcon.querySelector('svg');
+                if (svg) {
+                    svg.style.transform = `rotate(${rotation}deg)`;
+                }
 
                 if (pullDistance >= pullThreshold) {
                     refreshIcon.classList.add('ready-to-refresh');
@@ -1408,7 +1436,10 @@
                 ptrIndicator.classList.remove('visible');
                 refreshIcon.classList.remove('refreshing');
                 refreshIcon.style.transform = 'translateY(0px)';
-                refreshIcon.querySelector('svg').style.transform = 'rotate(0deg)';
+                const svg = refreshIcon.querySelector('svg');
+                if (svg) {
+                    svg.style.transform = 'rotate(0deg)';
+                }
             }, 500);
         }
     }
