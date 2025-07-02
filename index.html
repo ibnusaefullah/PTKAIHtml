@@ -145,6 +145,46 @@
         .glass-input::placeholder {
             color: rgba(255, 255, 255, 0.5);
         }
+        
+        /* [PULL TO REFRESH STYLES] */
+        #pull-to-refresh-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 20;
+            pointer-events: none;
+        }
+        #pull-to-refresh-indicator.visible {
+            opacity: 1;
+        }
+        #refresh-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--bg-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        #refresh-icon svg {
+            transition: transform 0.3s;
+        }
+        #refresh-icon.ready-to-refresh svg {
+            transform: rotate(180deg);
+        }
+        #refresh-icon.refreshing svg {
+            animation: spin 1s linear infinite;
+        }
+
 
     </style>
 </head>
@@ -192,6 +232,15 @@
     <!-- ### MAIN APPLICATION ### -->
     <!-- Container for the entire application -->
     <div id="app-shell" class="max-w-md mx-auto h-screen shadow-lg relative flex flex-col">
+
+        <!-- Pull to Refresh Indicator -->
+        <div id="pull-to-refresh-indicator">
+            <div id="refresh-icon">
+                <svg class="h-6 w-6 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.181-3.183m-4.991-2.696L7.985 5.644m0 0l-3.182 3.182m3.182-3.182l4.992 0" />
+                </svg>
+            </div>
+        </div>
 
         <!-- Initial Loading View -->
         <div id="loading-view" class="flex flex-col items-center justify-center h-full" style="background-color: var(--bg-primary);">
@@ -407,14 +456,16 @@
     }
 
     // --- INITIALIZATION ---
-    async function loadDataFromGoogleSheet() {
+    async function loadDataFromGoogleSheet(isRefresh = false) {
         if (!GOOGLE_SHEET_URL) {
             loadingText.innerHTML = 'URL Google Sheet belum diatur. Silakan edit variabel `GOOGLE_SHEET_URL` di dalam kode HTML ini.';
             el('loading-view').querySelector('.loader').style.display = 'none';
             return;
         }
         
-        loadingView.style.display = 'flex';
+        if (!isRefresh) {
+            loadingView.style.display = 'flex';
+        }
         
         try {
             const res = await fetch(GOOGLE_SHEET_URL + "?action=getAllData", { redirect: 'follow' });
@@ -435,12 +486,16 @@
 
             activityFeed = data.activityFeed || {};
             
-            loadingView.style.display = 'none';
-            appContainer.style.display = 'flex';
-            initializeNotifications();
-            setupEventListeners();
+            if (!isRefresh) {
+                loadingView.style.display = 'none';
+                appContainer.style.display = 'flex';
+                initializeNotifications();
+                setupEventListeners();
+                setupPullToRefresh(); // Setup pull-to-refresh listeners
+            }
             updateNavVisibility();
-            switchPage('home');
+            const activePageId = document.querySelector('.page.active')?.id.replace('page-', '') || 'home';
+            switchPage(activePageId, true); // Force rerender of current page
             
         } catch(e) {
             loadingView.style.display = 'flex';
@@ -466,7 +521,12 @@
         el('header-settings-btn').addEventListener('click', () => switchPage('profile'));
     }
     
-    function switchPage(pageId) {
+    function switchPage(pageId, forceRerender = false) {
+        const currentPage = document.querySelector('.page.active');
+        if (!forceRerender && currentPage && currentPage.id === `page-${pageId}`) {
+            return; // Don't re-render if it's the same page, unless forced
+        }
+
         insertIcons(); 
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(item => {
@@ -587,10 +647,10 @@
                 <div class="px-4">
                     <p class="font-semibold text-sm mb-2">Telah menyelesaikan:</p>
                     <div class="grid grid-cols-2 gap-2 text-sm">
-                         ${habitsToShow.map(habit => {
-                             const habitInfo = habits.find(h => h.name === habit);
-                             return `<div class="flex items-center gap-2 p-2 rounded-lg" style="background-color: var(--bg-secondary);"><span style="color: var(--text-secondary)">${habitInfo ? habitInfo.icon : ''}</span><span>${habit}</span></div>`
-                         }).join('')}
+                          ${habitsToShow.map(habit => {
+                              const habitInfo = habits.find(h => h.name === habit);
+                              return `<div class="flex items-center gap-2 p-2 rounded-lg" style="background-color: var(--bg-secondary);"><span style="color: var(--text-secondary)">${habitInfo ? habitInfo.icon : ''}</span><span>${habit}</span></div>`
+                          }).join('')}
                     </div>
                 </div>
 
@@ -797,15 +857,15 @@
                         <p style="color: var(--text-secondary)">Guru / Admin</p>
                     </div>
                      <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
-                        <h3 class="text-sm font-bold mb-2">Pengaturan</h3>
-                        <div id="settings-container"></div>
-                        <div class="border-t pt-4 mt-4" style="border-color: var(--border-color);">
-                           <button onclick="showSchoolDataModal()" class="flex items-center justify-between w-full py-2">
-                              <span class="font-medium">Edit Data Sekolah</span>
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                           </button>
-                        </div>
-                    </div>
+                         <h3 class="text-sm font-bold mb-2">Pengaturan</h3>
+                         <div id="settings-container"></div>
+                         <div class="border-t pt-4 mt-4" style="border-color: var(--border-color);">
+                            <button onclick="showSchoolDataModal()" class="flex items-center justify-between w-full py-2">
+                               <span class="font-medium">Edit Data Sekolah</span>
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                            </button>
+                         </div>
+                     </div>
                     <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
                 </div>
             `;
@@ -1280,6 +1340,80 @@
         await postData({ action: 'updateBulkStudents', payload: [currentUserData, targetUserData] });
     }
     
+    // --- PULL TO REFRESH LOGIC ---
+    function setupPullToRefresh() {
+        const appShell = el('app-shell');
+        const mainContent = appShell.querySelector('main');
+        const ptrIndicator = el('pull-to-refresh-indicator');
+        const refreshIcon = el('refresh-icon');
+
+        let startY = 0;
+        let pullDistance = 0;
+        let isPulling = false;
+        const pullThreshold = 80; // Pixels to pull before refresh triggers
+
+        appShell.addEventListener('touchstart', (e) => {
+            // Only start pull if content is scrolled to the top
+            if (mainContent.scrollTop === 0) {
+                startY = e.touches[0].pageY;
+                isPulling = true;
+            }
+        }, { passive: true });
+
+        appShell.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+
+            const currentY = e.touches[0].pageY;
+            pullDistance = currentY - startY;
+
+            if (pullDistance > 0) {
+                e.preventDefault(); // Prevent scrolling while pulling
+                ptrIndicator.classList.add('visible');
+                const rotation = Math.min(pullDistance, pullThreshold) / pullThreshold * 180;
+                refreshIcon.style.transform = `translateY(${pullDistance / 2}px)`;
+                refreshIcon.querySelector('svg').style.transform = `rotate(${rotation}deg)`;
+
+                if (pullDistance >= pullThreshold) {
+                    refreshIcon.classList.add('ready-to-refresh');
+                } else {
+                    refreshIcon.classList.remove('ready-to-refresh');
+                }
+            }
+
+        }, { passive: false });
+
+        appShell.addEventListener('touchend', () => {
+            if (!isPulling) return;
+            isPulling = false;
+
+            if (pullDistance >= pullThreshold) {
+                handleRefresh();
+            } else {
+                // Reset styles if not pulled far enough
+                ptrIndicator.classList.remove('visible');
+                refreshIcon.style.transform = 'translateY(0px)';
+            }
+            pullDistance = 0;
+        });
+
+        async function handleRefresh() {
+            refreshIcon.classList.remove('ready-to-refresh');
+            refreshIcon.classList.add('refreshing');
+            
+            // Wait for data to load
+            await loadDataFromGoogleSheet(true);
+
+            // Hide indicator after a short delay
+            setTimeout(() => {
+                ptrIndicator.classList.remove('visible');
+                refreshIcon.classList.remove('refreshing');
+                refreshIcon.style.transform = 'translateY(0px)';
+                refreshIcon.querySelector('svg').style.transform = 'rotate(0deg)';
+            }, 500);
+        }
+    }
+
+
     // --- PDF & LINKING FUNCTIONS ---
     function downloadMonthlyReportPDF() {
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ71uzBxbU_fk8hPiGETaKuLFCVet6zoU-ikg3fP6LeHTbPd59ronYd4UPD24qfy-IKFBHyX_53T1rz/pub?gid=1935868&single=true&output=pdf";
