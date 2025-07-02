@@ -458,6 +458,7 @@
     let notifications = []; 
     let hasUnreadNotifications = false;
     let currentPageId = 'home';
+    let isTransitioning = false; // Flag to prevent multiple transitions at once
 
     // --- MAIN ELEMENTS ---
     const el = id => document.getElementById(id);
@@ -582,12 +583,16 @@
     }
     
     function switchPage(pageId, forceRerender = false, swipeDirection = null) {
+        if (isTransitioning) return; // Prevent new transitions while one is running
+
         const currentPageEl = document.querySelector('.page.active');
         const newPageEl = el(`page-${pageId}`);
 
         if (!newPageEl || (!forceRerender && currentPageEl && currentPageEl.id === `page-${pageId}`)) {
             return;
         }
+        
+        isTransitioning = true;
 
         // --- Update Nav Bar ---
         currentPageId = pageId;
@@ -612,13 +617,14 @@
         function onAnimationEnd(event) {
             event.target.classList.remove('active', 'slide-out-to-left', 'slide-out-to-right');
             event.target.removeEventListener('animationend', onAnimationEnd);
+            isTransitioning = false; // Allow new transitions
         }
 
         if (currentPageEl && swipeDirection) {
             const slideOutClass = swipeDirection === 'left' ? 'slide-out-to-left' : 'slide-out-to-right';
             const slideInClass = swipeDirection === 'left' ? 'slide-in-from-right' : 'slide-in-from-left';
             
-            currentPageEl.addEventListener('animationend', onAnimationEnd);
+            currentPageEl.addEventListener('animationend', onAnimationEnd, { once: true });
             
             // Reset classes before applying new ones
             currentPageEl.className = 'page active';
@@ -634,6 +640,7 @@
                 currentPageEl.classList.remove('active');
             }
             newPageEl.className = 'page active fade-in';
+            setTimeout(() => { isTransitioning = false; }, 300); // Match animation duration
         }
 
         // --- Render Page Content ---
