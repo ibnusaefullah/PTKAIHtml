@@ -77,7 +77,7 @@
         }
 
         /* [MAIN APP STYLES] */
-        #app-shell, .modal-content, #notification-page-container, #book-details-modal-content {
+        #app-shell, .modal-content, #notification-page-container, #book-details-modal-content, #search-page-container {
             background-color: var(--bg-primary);
             color: var(--text-primary);
         }
@@ -105,7 +105,7 @@
         .follow-btn.not-following { background-color: #3B82F6; color: white; }
         .badge { transition: transform 0.2s ease-in-out; }
         .badge:hover { transform: scale(1.1); }
-        #notification-page-container { transition: transform 0.3s ease-in-out; }
+        #notification-page-container, #search-page-container { transition: transform 0.3s ease-in-out; }
         .activity-card { background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color); }
         .category-btn { scroll-snap-align: start; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -149,9 +149,9 @@
         .page.slide-out-to-right { animation-name: slide-out-to-right; }
 
 
-        /* [GLASSMORPHISM LOGIN STYLES] */
+        /* [GLASSMORPHISM STYLES] */
         .glass-modal-content {
-            background: rgba(31, 41, 55, 0.25); /* Darker translucent background for better contrast on light/dark backgrounds */
+            background: rgba(31, 41, 55, 0.25); /* Darker translucent background */
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             border-radius: 1.5rem; /* 24px */
@@ -295,14 +295,19 @@
             <header id="app-header" class="p-4 flex justify-between items-center border-b" style="background-color: var(--bg-primary); border-color: var(--border-color);">
                 <h1 id="header-title" class="text-xl font-bold">Beranda</h1>
                 <div class="flex items-center gap-4">
+                    <button id="theme-toggle-btn" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                        <!-- Icon will be set by JS -->
+                    </button>
+                    <button id="search-btn" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
                     <button id="notification-btn" class="relative text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
                         <span id="notification-dot" class="hidden absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2" style="ring-color: var(--bg-primary)"></span>
-                    </button>
-                    <button id="header-settings-btn" class="text-gray-600 dark:text-gray-300">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
                     </button>
                 </div>
             </header>
@@ -333,6 +338,7 @@
     <div id="badge-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
     <div id="book-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end"></div>
     <div id="notification-page-container" class="hidden fixed inset-0 z-50 transform translate-x-full"></div>
+    <div id="search-page-container" class="hidden fixed inset-0 z-50 transform translate-x-full"></div>
     <div id="user-profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"></div>
 
     <script>
@@ -462,6 +468,7 @@
     let hasUnreadNotifications = false;
     let currentPageId = 'home';
     let isTransitioning = false; // Flag to prevent multiple transitions at once
+    let viewingProfileNisn = null; // To track which profile is being viewed
 
     // --- MAIN ELEMENTS ---
     const el = id => document.getElementById(id);
@@ -470,6 +477,19 @@
     const loadingText = el('loading-text');
 
     // --- THEME LOGIC ---
+    function updateThemeToggleButton() {
+        const btn = el('theme-toggle-btn');
+        if (!btn) return;
+        const isDark = document.documentElement.classList.contains('dark');
+        if (isDark) {
+            // Show sun icon for light mode
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`;
+        } else {
+            // Show moon icon for dark mode
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>`;
+        }
+    }
+
     function applyInitialTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         if (savedTheme === 'dark') {
@@ -477,11 +497,13 @@
         } else {
             document.documentElement.classList.remove('dark');
         }
+        updateThemeToggleButton();
     }
 
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeToggleButton();
     }
     
     // --- DATE PARSING & FORMATTING ---
@@ -550,6 +572,13 @@
             const data = await res.json();
             
             studentDatabase = data.students || {};
+            // Add a default bio for demonstration
+            Object.keys(studentDatabase).forEach(nisn => {
+                if (!studentDatabase[nisn].bio) {
+                    studentDatabase[nisn].bio = "Siswa hebat dari UPTD SD Negeri 3 Pekandangan!";
+                }
+            });
+
             videoCollection = data.videos || {};
             bookCollection = data.books || {};
             // Add category and description to book collection for new UI
@@ -592,12 +621,18 @@
 
     function setupEventListeners() {
         document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => switchPage(item.dataset.page)); });
+        el('theme-toggle-btn').addEventListener('click', toggleTheme);
+        el('search-btn').addEventListener('click', showSearchPage);
         el('notification-btn').addEventListener('click', showNotificationPage);
-        el('header-settings-btn').addEventListener('click', () => switchPage('profile'));
     }
     
     function switchPage(pageId, forceRerender = false, swipeDirection = null) {
-        if (isTransitioning) return; // Prevent new transitions while one is running
+        if (isTransitioning) return;
+
+        // Reset viewingProfileNisn if we are navigating away from a profile page
+        if (currentPageId === 'profile' && pageId !== 'profile') {
+            viewingProfileNisn = null;
+        }
 
         const currentPageEl = document.querySelector('.page.active');
         const newPageEl = el(`page-${pageId}`);
@@ -620,7 +655,12 @@
             if (iconSet) item.insertAdjacentHTML('afterbegin', iconSet.outline);
             if (item.dataset && item.dataset.page === pageId) {
                 item.classList.add('active');
-                el('header-title').textContent = item.querySelector('.nav-text').textContent;
+                if (pageId === 'profile' && viewingProfileNisn && viewingProfileNisn !== currentStudent?.nisn) {
+                    const studentData = studentDatabase[viewingProfileNisn];
+                    el('header-title').textContent = studentData ? studentData.name : 'Profil';
+                } else {
+                    el('header-title').textContent = item.querySelector('.nav-text').textContent;
+                }
                 const activeIcon = item.querySelector('svg');
                 if (activeIcon) activeIcon.remove();
                 if (iconSet) item.insertAdjacentHTML('afterbegin', iconSet.filled);
@@ -631,7 +671,7 @@
         function onAnimationEnd(event) {
             event.target.classList.remove('active', 'slide-out-to-left', 'slide-out-to-right');
             event.target.removeEventListener('animationend', onAnimationEnd);
-            isTransitioning = false; // Allow new transitions
+            isTransitioning = false;
         }
 
         if (currentPageEl && swipeDirection) {
@@ -640,21 +680,20 @@
             
             currentPageEl.addEventListener('animationend', onAnimationEnd, { once: true });
             
-            // Reset classes before applying new ones
             currentPageEl.className = 'page active';
-            void currentPageEl.offsetWidth; // Trigger reflow to restart animation
+            void currentPageEl.offsetWidth;
             currentPageEl.classList.add(slideOutClass);
 
             newPageEl.className = 'page active';
-            void newPageEl.offsetWidth; // Trigger reflow
+            void newPageEl.offsetWidth;
             newPageEl.classList.add(slideInClass);
 
-        } else { // Default fade for clicks or first load
+        } else {
             if (currentPageEl) {
                 currentPageEl.classList.remove('active');
             }
             newPageEl.className = 'page active fade-in';
-            setTimeout(() => { isTransitioning = false; }, 300); // Match animation duration
+            setTimeout(() => { isTransitioning = false; }, 300);
         }
 
         // --- Render Page Content ---
@@ -687,26 +726,19 @@
         homePage.innerHTML = ''; 
         let contentHTML = '';
 
-        // Allow both students and admins to see the feed
         if (!currentStudent && !currentAdmin) {
             homePage.innerHTML = `<div class="text-center mt-8 p-4"><p>Silakan login untuk melihat feed aktivitas.</p><button onclick="switchPage('profile')" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg">Ke Halaman Profil</button></div>`;
             return;
         }
 
-        // Get all activities without filtering by 'following' list
-        const feedArray = Object.values(activityFeed);
-        
-        // Sort activities by timestamp, newest first
-        feedArray.sort((a, b) => parseInt(b.id.split('_')[1]) - parseInt(a.id.split('_')[1]));
+        const feedArray = Object.values(activityFeed).sort((a, b) => parseInt(b.id.split('_')[1]) - parseInt(a.id.split('_')[1]));
 
         if (feedArray.length === 0) {
-            // Updated message for when there's no activity yet
             contentHTML += `<div class="text-center mt-8 p-4"><p>Belum ada aktivitas yang diposting.</p></div>`;
         } else {
             contentHTML += feedArray.map(activity => renderActivityCard(activity)).join('');
         }
         
-        // The "Suggestions for you" section is removed as all activities are now shown.
         homePage.innerHTML = contentHTML;
     }
     
@@ -741,19 +773,17 @@
                     </div>
                 </div>
 
-                <div class="px-4 pt-4 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <button onclick="handleLikePost('${activity.id}')" class="flex items-center gap-2">
+                <div class="px-4 pt-3 space-y-1">
+                    <div class="flex items-center gap-3">
+                        <button onclick="handleLikePost('${activity.id}')" class="flex items-center">
                             ${isLiked
                                 ? `<svg aria-label="Batal Suka" class="h-7 w-7 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>`
-                                : `<svg aria-label="Suka" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>`
+                                : `<svg aria-label="Suka" class="h-7 w-7 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>`
                             }
                         </button>
+                        <p class="font-semibold text-sm">${activity.likes || 0} suka</p>
                     </div>
-                </div>
-                <div class="px-4 pt-2">
-                    <p class="font-semibold text-sm">${activity.likes || 0} suka</p>
-                    <p class="text-xs pt-1" style="color: var(--text-secondary);">${displayDate}</p>
+                    <p class="text-xs" style="color: var(--text-secondary);">${displayDate}</p>
                 </div>
             </div>`;
     }
@@ -892,72 +922,10 @@
     
     function renderProfilePage() {
         const profilePage = el('page-profile');
-        
-        if(currentStudent) {
-            const studentData = studentDatabase[currentStudent.nisn];
-            const achievements = studentData.achievements || {};
+        const nisnToRender = viewingProfileNisn || (currentStudent ? currentStudent.nisn : null);
+        const isOwnProfile = !viewingProfileNisn || (currentStudent && viewingProfileNisn === currentStudent.nisn);
 
-            profilePage.innerHTML = `
-            <div class="space-y-4 p-4">
-                <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
-                    <div class="flex items-center">
-                        <img src="${studentData.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-20 h-20 rounded-full border-4 shadow-lg" style="border-color: var(--bg-primary)">
-                        <div class="flex-grow flex justify-around">
-                            <div class="text-center"><p class="font-bold text-lg">${studentData.points || 0}</p><p class="text-sm" style="color: var(--text-secondary)">Poin</p></div>
-                            <div class="text-center"><p class="font-bold text-lg">${(studentData.followers || []).length}</p><p class="text-sm" style="color: var(--text-secondary)">Pengikut</p></div>
-                            <div class="text-center"><p class="font-bold text-lg">${(studentData.following || []).length}</p><p class="text-sm" style="color: var(--text-secondary)">Mengikuti</p></div>
-                        </div>
-                    </div>
-                    <h3 class="text-lg font-bold mt-3">${currentStudent.name}</h3>
-                    <p class="text-sm" style="color: var(--text-secondary)">NISN: ${currentStudent.nisn}</p>
-                </div>
-                
-                <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
-                    <h3 class="text-sm font-bold mb-2">Lencana Pencapaian</h3>
-                    <div class="grid grid-cols-4 gap-4">
-                        ${badges.map(badge => {
-                            const habitAchievements = achievements[badge.name] || [];
-                            const completions = habitAchievements.length;
-                            const isUnlocked = completions >= 20;
-                            const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
-                            const toastMessage = isUnlocked ? '' : `Selesaikan ${20 - completions} kali lagi untuk membuka lencana ini!`;
-                            const clickAction = isUnlocked ? `showBadgeDetailsModal('${badge.name}')` : `alert('${toastMessage}')`;
-                            return `<div onclick="${clickAction}" class="badge flex flex-col items-center cursor-pointer"><div class="w-14 h-14">${icon}</div><span class="text-xs text-center mt-1 font-medium ${isUnlocked ? '' : 'opacity-50'}">${badge.name}</span></div>`;
-                        }).join('')}
-                    </div>
-                </div>
-
-                <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
-                    <h3 class="text-sm font-bold mb-2">Pengaturan & Laporan</h3>
-                    <div id="settings-container"></div>
-                </div>
-
-                <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
-            </div>`;
-            renderSettings();
-        } else if (currentAdmin) {
-             profilePage.innerHTML = `
-                <div class="p-4 space-y-4">
-                    <div class="p-6 rounded-xl text-center" style="background-color: var(--bg-primary);">
-                        <img src="https://placehold.co/100x100/34D399/FFFFFF?text=G" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 shadow-lg" style="border-color: var(--bg-primary)">
-                        <h3 class="text-xl font-bold">${currentAdmin.username}</h3>
-                        <p style="color: var(--text-secondary)">Guru / Admin</p>
-                    </div>
-                     <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
-                         <h3 class="text-sm font-bold mb-2">Pengaturan</h3>
-                         <div id="settings-container"></div>
-                         <div class="border-t pt-4 mt-4" style="border-color: var(--border-color);">
-                             <button onclick="showSchoolDataModal()" class="flex items-center justify-between w-full py-2">
-                                <span class="font-medium">Edit Data Sekolah</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                             </button>
-                         </div>
-                     </div>
-                    <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
-                </div>
-            `;
-            renderSettings();
-        } else {
+        if (!nisnToRender && !currentAdmin) { // Not viewing anyone and not an admin
             profilePage.innerHTML = `
             <div class="p-4">
                 <div class="p-6 rounded-xl text-center" style="background-color: var(--bg-primary);">
@@ -972,47 +940,97 @@
             </div>`;
             el('show-student-login-btn').addEventListener('click', () => showLoginModal('student'));
             el('show-admin-login-btn').addEventListener('click', () => showLoginModal('admin'));
+            return;
         }
-    }
-
-    function renderSettings() {
-        const container = el('settings-container');
-        if (!container) return;
-
-        const isDarkMode = document.documentElement.classList.contains('dark');
-
-        let reportButtonsHTML = '';
-        if (currentStudent) {
-            reportButtonsHTML = `
-                <div class="border-t pt-4 mt-4" style="border-color: var(--border-color);">
-                    <button onclick="generateParentReflectionPDF(currentStudent)" class="flex items-center justify-between w-full py-2">
-                       <span class="font-medium">Unduh Refleksi Orang Tua</span>
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                    </button>
-                    <button onclick="downloadMonthlyReportPDF()" class="flex items-center justify-between w-full py-2">
-                        <span class="font-medium">Unduh Laporan Bulanan</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                    </button>
+        
+        if (currentAdmin && !nisnToRender) { // Admin viewing their own simple profile
+             profilePage.innerHTML = `
+                <div class="p-4 space-y-4">
+                    <div class="p-6 rounded-xl text-center" style="background-color: var(--bg-primary);">
+                        <img src="https://placehold.co/100x100/34D399/FFFFFF?text=G" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 shadow-lg" style="border-color: var(--bg-primary)">
+                        <h3 class="text-xl font-bold">${currentAdmin.username}</h3>
+                        <p style="color: var(--text-secondary)">Guru / Admin</p>
+                    </div>
+                     <div class="p-4 rounded-xl" style="background-color: var(--bg-primary);">
+                         <button onclick="showSchoolDataModal()" class="flex items-center justify-between w-full py-2">
+                            <span class="font-medium">Edit Data Sekolah</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                         </button>
+                     </div>
+                    <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition">Logout</button>
                 </div>
             `;
+            return;
         }
 
-        container.innerHTML = `
-            <div class="flex items-center justify-between py-2">
-                <div class="flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                    <span class="font-medium">Mode Gelap</span>
-                </div>
-                <label for="dark-mode-toggle" class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" ${isDarkMode ? 'checked' : ''}>
-                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                </label>
-            </div>
-            ${reportButtonsHTML}
+        // --- Render Full Student Profile Page ---
+        const studentData = studentDatabase[nisnToRender];
+        if (!studentData) {
+            profilePage.innerHTML = `<p class="text-center p-8">Profil siswa tidak ditemukan.</p>`;
+            return;
+        }
+        
+        const achievements = studentData.achievements || {};
+        const userActivities = Object.values(activityFeed)
+            .filter(act => act.nisn === nisnToRender)
+            .sort((a, b) => parseInt(b.id.split('_')[1]) - parseInt(a.id.split('_')[1]));
+        
+        const reportButtonsHTML = `
+            <button onclick="generateParentReflectionPDF(${JSON.stringify(studentData)})" class="flex items-center justify-between w-full py-2">
+                <span class="font-medium">Unduh Refleksi Orang Tua</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            </button>
+            <button onclick="downloadMonthlyReportPDF()" class="flex items-center justify-between w-full py-2">
+                <span class="font-medium">Unduh Laporan Bulanan</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            </button>
         `;
-        el('dark-mode-toggle').addEventListener('change', toggleTheme);
+
+        profilePage.innerHTML = `
+        <div class="p-4" style="background-color: var(--bg-primary);">
+            <div class="flex items-center">
+                <img src="${studentData.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-20 h-20 rounded-full border-4 shadow-lg" style="border-color: var(--bg-primary)">
+                <div class="flex-grow flex justify-around">
+                    <div class="text-center"><p class="font-bold text-lg">${studentData.points || 0}</p><p class="text-sm" style="color: var(--text-secondary)">Poin</p></div>
+                    <div class="text-center"><p class="font-bold text-lg">${(studentData.followers || []).length}</p><p class="text-sm" style="color: var(--text-secondary)">Pengikut</p></div>
+                    <div class="text-center"><p class="font-bold text-lg">${(studentData.following || []).length}</p><p class="text-sm" style="color: var(--text-secondary)">Mengikuti</p></div>
+                </div>
+            </div>
+            <h3 class="text-lg font-bold mt-3">${studentData.name}</h3>
+            ${isOwnProfile ? `<p class="text-sm" style="color: var(--text-secondary)">NISN: ${studentData.nisn}</p>` : ''}
+            <p class="text-sm mt-2">${studentData.bio || ''}</p>
+            ${!isOwnProfile ? `<button onclick="handleFollowToggle('${nisnToRender}')" class="follow-btn ${currentStudent?.following?.includes(nisnToRender) ? 'following' : 'not-following'} w-full mt-3">${currentStudent?.following?.includes(nisnToRender) ? 'Mengikuti' : 'Ikuti'}</button>` : ''}
+        </div>
+        
+        <div class="p-4 mt-2 rounded-t-xl" style="background-color: var(--bg-secondary);">
+            <div class="p-4 rounded-xl mb-4" style="background-color: var(--bg-primary);">
+                <h3 class="text-sm font-bold mb-2">Lencana Pencapaian</h3>
+                <div class="grid grid-cols-4 gap-4">
+                    ${badges.map(badge => {
+                        const habitAchievements = achievements[badge.name] || [];
+                        const completions = habitAchievements.length;
+                        const isUnlocked = completions >= 20;
+                        const icon = isUnlocked ? badge.unlockedIcon : badge.lockedIcon;
+                        const toastMessage = isUnlocked ? '' : `Selesaikan ${20 - completions} kali lagi untuk membuka lencana ini!`;
+                        const clickAction = isUnlocked && isOwnProfile ? `showBadgeDetailsModal('${badge.name}')` : `alert('${toastMessage}')`;
+                        return `<div onclick="${clickAction}" class="badge flex flex-col items-center ${isOwnProfile ? 'cursor-pointer' : 'cursor-default'}"><div class="w-14 h-14">${icon}</div><span class="text-xs text-center mt-1 font-medium ${isUnlocked ? '' : 'opacity-50'}">${badge.name}</span></div>`;
+                    }).join('')}
+                </div>
+            </div>
+
+            ${isOwnProfile ? `
+            <div class="p-4 rounded-xl mb-4" style="background-color: var(--bg-primary);">
+                <h3 class="text-sm font-bold mb-2">Laporan</h3>
+                ${reportButtonsHTML}
+            </div>
+            <button onclick="handleLogout()" class="w-full bg-red-500 text-white py-2.5 rounded-lg hover:bg-red-600 transition mb-4">Logout</button>
+            ` : ''}
+
+            <h3 class="text-sm font-bold mb-2 px-2">Aktivitas</h3>
+            <div id="user-activity-feed">
+                ${userActivities.length > 0 ? userActivities.map(act => renderActivityCard(act)).join('') : '<div class="p-4 rounded-xl text-center" style="background-color: var(--bg-primary);"><p style="color: var(--text-secondary)">Belum ada aktivitas.</p></div>'}
+            </div>
+        </div>`;
     }
 
     function renderKontenPage() {
@@ -1258,6 +1276,7 @@
     function handleLogout() {
         currentStudent = null;
         currentAdmin = null;
+        viewingProfileNisn = null;
         updateNavVisibility();
         switchPage('home'); // Redirect to home page after logout for clearer feedback
     }
@@ -1422,9 +1441,9 @@
         studentDatabase[targetNisn] = targetUserData;
         currentStudent = currentUserData;
         
-        // Rerender the home page to update follow buttons there
-        if (currentPageId === 'home') {
-            renderHomePage();
+        // Rerender the profile page if it's currently being viewed
+        if (currentPageId === 'profile' && viewingProfileNisn === targetNisn) {
+            renderProfilePage();
         }
         
         // Rerender the user profile modal if it's open for the target user
@@ -1436,7 +1455,13 @@
         await postData({ action: 'updateBulkStudents', payload: [currentUserData, targetUserData] });
     }
 
-    // --- USER PROFILE MODAL (FIX) ---
+    // --- USER PROFILE MODAL & FULL PAGE ---
+    function showFullProfilePage(nisn) {
+        viewingProfileNisn = nisn;
+        el('user-profile-modal').classList.add('hidden');
+        switchPage('profile');
+    }
+
     function showUserProfileModal(nisn) {
         const modal = el('user-profile-modal');
         const studentData = studentDatabase[nisn];
@@ -1447,34 +1472,42 @@
             return;
         }
 
-        // Jangan tampilkan modal jika melihat profil sendiri dari feed
         if (currentStudent && currentStudent.nisn === nisn) {
             switchPage('profile');
             return;
         }
 
         let followButtonHTML = '';
-        // Tampilkan tombol follow hanya jika pengguna yang login adalah siswa
-        // dan tidak sedang melihat profilnya sendiri.
         if (currentStudent && currentStudent.nisn !== nisn) {
             const isFollowing = currentStudent.following && currentStudent.following.includes(nisn);
-            const btnClass = isFollowing ? 'following' : 'not-following';
+            const btnClass = isFollowing 
+                ? 'bg-white/20 text-white border border-white/40' 
+                : 'bg-blue-500 text-white border-transparent';
             const btnText = isFollowing ? 'Mengikuti' : 'Ikuti';
             followButtonHTML = `<button onclick="handleFollowToggle('${nisn}')" class="follow-btn ${btnClass} mt-4">${btnText}</button>`;
         }
 
         modal.innerHTML = `
-            <div class="modal-content p-6 rounded-xl shadow-xl w-full max-w-xs text-center relative">
-                <button onclick="el('user-profile-modal').classList.add('hidden')" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+            <div class="glass-modal-content p-6 shadow-xl w-full max-w-xs text-center relative">
+                <button onclick="el('user-profile-modal').classList.add('hidden')" class="absolute top-3 right-3 text-gray-300 hover:text-white transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
-                <img src="${studentData.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-24 h-24 rounded-full mx-auto border-4 shadow-lg" style="border-color: var(--bg-primary)">
-                <h3 class="text-xl font-bold mt-4">${studentData.name}</h3>
-                <p class="text-sm" style="color: var(--text-secondary);">Kelas ${studentData.class}</p>
-                <div class="flex justify-around my-4 py-2 border-t border-b" style="border-color: var(--border-color);">
-                    <div class="text-center"><p class="font-bold text-lg">${studentData.points || 0}</p><p class="text-sm" style="color: var(--text-secondary)">Poin</p></div>
-                    <div class="text-center"><p class="font-bold text-lg">${(studentData.followers || []).length}</p><p class="text-sm" style="color: var(--text-secondary)">Pengikut</p></div>
-                    <div class="text-center"><p class="font-bold text-lg">${(studentData.following || []).length}</p><p class="text-sm" style="color: var(--text-secondary)">Mengikuti</p></div>
+                <img src="${studentData.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-24 h-24 rounded-full mx-auto border-4 border-white/20 shadow-lg">
+                <h3 class="text-xl font-bold mt-4 text-white cursor-pointer hover:underline" onclick="showFullProfilePage('${studentData.nisn}')">${studentData.name}</h3>
+                <p class="text-sm text-gray-300">Kelas ${studentData.class}</p>
+                <div class="flex justify-around my-4 py-3 border-t border-b border-white/20">
+                    <div class="text-center">
+                        <p class="font-bold text-lg text-white">${studentData.points || 0}</p>
+                        <p class="text-sm text-gray-300">Poin</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="font-bold text-lg text-white">${(studentData.followers || []).length}</p>
+                        <p class="text-sm text-gray-300">Pengikut</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="font-bold text-lg text-white">${(studentData.following || []).length}</p>
+                        <p class="text-sm text-gray-300">Mengikuti</p>
+                    </div>
                 </div>
                 ${followButtonHTML}
             </div>
@@ -1482,7 +1515,6 @@
         
         modal.classList.remove('hidden');
         
-        // Add event listener to close modal on background click
         modal.addEventListener('click', (e) => {
             if (e.target.id === 'user-profile-modal') {
                 modal.classList.add('hidden');
@@ -1888,6 +1920,7 @@
         return Math.floor(seconds) + " detik lalu";
     }
     
+    // --- NOTIFICATION PAGE ---
     function initializeNotifications() {
         // Notifications are temporary for now
     }
@@ -1903,8 +1936,8 @@
         if (!currentStudent) return;
         
         container.innerHTML = `
-            <div class="w-full h-full flex flex-col modal-content">
-                <div class="p-4 border-b flex items-center" style="border-color: var(--border-color)">
+            <div class="w-full h-full flex flex-col">
+                <div class="p-4 border-b flex items-center" style="border-color: var(--border-color); background-color: var(--bg-primary);">
                     <button onclick="closeNotificationPage()" class="mr-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
                     </button>
@@ -1914,7 +1947,8 @@
             </div>
         `;
         renderNotifications();
-        container.classList.remove('hidden', 'translate-x-full');
+        container.classList.remove('hidden');
+        setTimeout(() => container.classList.remove('translate-x-full'), 10);
         el('notification-dot').classList.add('hidden');
     }
 
@@ -1981,6 +2015,151 @@
             }
         }
         listContainer.innerHTML = contentHTML;
+    }
+
+    // --- SEARCH PAGE ---
+    function showSearchPage() {
+        const container = el('search-page-container');
+        container.innerHTML = `
+            <div class="w-full h-full flex flex-col">
+                <div class="p-4 border-b flex items-center gap-2" style="border-color: var(--border-color); background-color: var(--bg-primary);">
+                    <button onclick="closeSearchPage()" class="p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    </button>
+                    <div class="relative flex-grow">
+                        <input type="search" id="search-page-input" class="input-field !rounded-full w-full pl-4" placeholder="Cari teman, buku, video, atau konten..." autofocus>
+                    </div>
+                </div>
+                <div id="search-page-results" class="flex-grow overflow-y-auto p-2">
+                     <p class="text-center p-8" style="color: var(--text-secondary)">Cari siswa, buku, video, atau aktivitas.</p>
+                </div>
+            </div>
+        `;
+
+        container.classList.remove('hidden');
+        setTimeout(() => {
+            container.classList.remove('translate-x-full');
+        }, 10);
+
+        const searchInput = el('search-page-input');
+        searchInput.addEventListener('input', (e) => renderSearchResultsList(e.target.value));
+    }
+
+    function closeSearchPage() {
+        const container = el('search-page-container');
+        container.classList.add('translate-x-full');
+        setTimeout(() => container.classList.add('hidden'), 300);
+    }
+
+    function renderSearchResultsList(query) {
+        const resultsContainer = el('search-page-results');
+        const lowerCaseQuery = query.toLowerCase().trim();
+
+        if (!lowerCaseQuery) {
+            resultsContainer.innerHTML = `<p class="text-center p-8" style="color: var(--text-secondary)">Cari siswa, buku, video, atau aktivitas.</p>`;
+            return;
+        }
+        
+        const isLoggedIn = currentStudent || currentAdmin;
+
+        // Search Users (only if logged in)
+        const userResults = isLoggedIn ? Object.values(studentDatabase).filter(user =>
+            user.name.toLowerCase().includes(lowerCaseQuery)
+        ) : [];
+
+        // Search Books
+        const bookResults = Object.values(bookCollection).filter(book => 
+            book.title.toLowerCase().includes(lowerCaseQuery)
+        );
+
+        // Search Videos
+        const videoResults = Object.values(videoCollection).filter(video => 
+            video.title.toLowerCase().includes(lowerCaseQuery)
+        );
+
+        // Search Content (Activities)
+        const contentResults = isLoggedIn ? Object.values(activityFeed).filter(activity =>
+            (activity.completedHabits || '').toLowerCase().includes(lowerCaseQuery) ||
+            (activity.name || '').toLowerCase().includes(lowerCaseQuery)
+        ) : [];
+
+        let html = '';
+
+        // Render User Results
+        if (isLoggedIn && userResults.length > 0) {
+            html += '<h3 class="font-bold text-md p-2">Pengguna</h3>';
+            html += '<div class="space-y-1">';
+            userResults.forEach(user => {
+                if (currentStudent && currentStudent.nisn === user.nisn) return;
+                html += `
+                    <div class="flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800" onclick="showUserProfileModal('${user.nisn}'); closeSearchPage();">
+                        <div class="flex items-center gap-3">
+                            <img src="${user.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-10 h-10 rounded-full">
+                            <div>
+                                <p class="font-semibold text-sm">${user.name}</p>
+                                <p class="text-xs" style="color: var(--text-secondary)">Kelas ${user.class}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+
+        // Render Book Results
+        if (bookResults.length > 0) {
+            html += '<h3 class="font-bold text-md p-2 mt-4">Buku</h3>';
+            html += '<div class="space-y-2">';
+            bookResults.forEach(book => {
+                html += `
+                    <div class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800" onclick="showBookDetailModal('${book.id}'); closeSearchPage();">
+                        <img src="${book.cover}" onerror="this.src='https://placehold.co/80x120/CCCCCC/FFFFFF?text=Err'" class="w-12 h-16 object-cover rounded-md flex-shrink-0">
+                        <div>
+                            <p class="font-semibold text-sm">${book.title}</p>
+                            <p class="text-xs" style="color: var(--text-secondary);">${book.category}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+
+        // Render Video Results
+        if (videoResults.length > 0) {
+            html += '<h3 class="font-bold text-md p-2 mt-4">Video</h3>';
+            html += '<div class="space-y-2">';
+            videoResults.forEach(video => {
+                html += `
+                    <div class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800" onclick="switchPage('video'); closeSearchPage();">
+                        <img src="https://img.youtube.com/vi/${video.youtubeId}/0.jpg" alt="${video.title}" class="w-24 h-16 object-cover rounded-md flex-shrink-0">
+                        <div>
+                            <p class="font-semibold text-sm">${video.title}</p>
+                            <p class="text-xs" style="color: var(--text-secondary);">Video</p>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+
+        // Render Activity Results (only if logged in)
+        if (isLoggedIn && contentResults.length > 0) {
+            html += '<h3 class="font-bold text-md p-2 mt-4">Aktivitas</h3>';
+            contentResults.forEach(activity => {
+                html += `<div class="p-2">${renderActivityCard(activity)}</div>`;
+            });
+        }
+
+        const hasAnyResults = (isLoggedIn && userResults.length > 0) || 
+                              bookResults.length > 0 || 
+                              videoResults.length > 0 || 
+                              (isLoggedIn && contentResults.length > 0);
+
+        if (!hasAnyResults) {
+            resultsContainer.innerHTML = `<p class="text-center p-8" style="color: var(--text-secondary)">Tidak ada hasil ditemukan untuk "${query}".</p>`;
+        } else {
+            resultsContainer.innerHTML = html;
+        }
     }
     
     </script>
