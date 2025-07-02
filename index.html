@@ -601,50 +601,26 @@
         homePage.innerHTML = ''; 
         let contentHTML = '';
 
-        if (!currentStudent) {
+        // Allow both students and admins to see the feed
+        if (!currentStudent && !currentAdmin) {
             homePage.innerHTML = `<div class="text-center mt-8 p-4"><p>Silakan login untuk melihat feed aktivitas.</p><button onclick="switchPage('profile')" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg">Ke Halaman Profil</button></div>`;
             return;
         }
 
-        const followingList = currentStudent.following || [];
+        // Get all activities without filtering by 'following' list
+        const feedArray = Object.values(activityFeed);
         
-        const feedArray = Object.values(activityFeed)
-            .filter(act => followingList.includes(act.nisn) || act.nisn === currentStudent.nisn);
-        
+        // Sort activities by timestamp, newest first
         feedArray.sort((a, b) => parseInt(b.id.split('_')[1]) - parseInt(a.id.split('_')[1]));
 
         if (feedArray.length === 0) {
-            contentHTML += `<div class="text-center mt-8 p-4"><p>Feed Anda sepi. Ikuti teman untuk melihat aktivitas mereka di sini.</p></div>`;
+            // Updated message for when there's no activity yet
+            contentHTML += `<div class="text-center mt-8 p-4"><p>Belum ada aktivitas yang diposting.</p></div>`;
         } else {
             contentHTML += feedArray.map(activity => renderActivityCard(activity)).join('');
         }
         
-        const suggestions = Object.values(studentDatabase)
-            .filter(student => student.nisn !== currentStudent.nisn && !followingList.includes(student.nisn))
-            .slice(0, 5);
-
-        if(suggestions.length > 0){
-            contentHTML += `
-                <div class="p-4 mt-4">
-                    <h3 class="font-bold mb-2">Saran untuk Anda</h3>
-                    <div class="p-2 space-y-2 rounded-lg" style="background-color: var(--bg-primary);">
-                        ${suggestions.map(student => `
-                            <div class="flex items-center justify-between p-2">
-                                <div class="flex items-center gap-3">
-                                    <img src="${student.avatar}" onerror="this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Err'" class="w-10 h-10 rounded-full">
-                                    <div>
-                                        <p class="font-bold text-sm">${student.name}</p>
-                                        <p class="text-xs" style="color: var(--text-secondary)">Siswa Kelas ${student.class}</p>
-                                    </div>
-                                </div>
-                                <button onclick="handleFollowToggle('${student.nisn}')" class="follow-btn not-following">Ikuti</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
+        // The "Suggestions for you" section is removed as all activities are now shown.
         homePage.innerHTML = contentHTML;
     }
     
