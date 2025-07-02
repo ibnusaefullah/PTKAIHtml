@@ -513,7 +513,8 @@
                 appContainer.style.display = 'flex';
                 initializeNotifications();
                 setupEventListeners();
-                setupPullToRefresh(); // Setup pull-to-refresh listeners
+                setupPullToRefresh();
+                setupSwipeNavigation(); // Setup swipe navigation
             }
             updateNavVisibility();
             const activePageId = document.querySelector('.page.active')?.id.replace('page-', '') || 'home';
@@ -1417,6 +1418,54 @@
                     svg.style.transform = 'rotate(0deg)';
                 }
             }, 500);
+        }
+    }
+
+    // --- SWIPE NAVIGATION LOGIC ---
+    function setupSwipeNavigation() {
+        const mainContent = el('app-shell').querySelector('main');
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        const swipeThreshold = 50; // Minimum distance for a swipe
+
+        mainContent.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        mainContent.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Ensure it's a horizontal swipe and not a vertical scroll
+            if (Math.abs(deltaX) < swipeThreshold || Math.abs(deltaX) < Math.abs(deltaY)) {
+                return;
+            }
+
+            const pageSequence = Array.from(document.querySelectorAll('.nav-item'))
+                .filter(item => item.style.display !== 'none')
+                .map(item => item.dataset.page);
+            
+            const currentIndex = pageSequence.indexOf(currentPageId);
+            if (currentIndex === -1) return;
+
+            if (deltaX < 0) {
+                // Swipe Left -> Next Page
+                const nextIndex = (currentIndex + 1) % pageSequence.length;
+                switchPage(pageSequence[nextIndex]);
+            } else {
+                // Swipe Right -> Previous Page
+                const prevIndex = (currentIndex - 1 + pageSequence.length) % pageSequence.length;
+                switchPage(pageSequence[prevIndex]);
+            }
         }
     }
 
