@@ -513,8 +513,7 @@
                 appContainer.style.display = 'flex';
                 initializeNotifications();
                 setupEventListeners();
-                setupPullToRefresh();
-                setupSwipeNavigation(); // Setup swipe navigation
+                setupTouchGestures(); // Setup unified touch gestures
             }
             updateNavVisibility();
             const activePageId = document.querySelector('.page.active')?.id.replace('page-', '') || 'home';
@@ -1342,73 +1341,109 @@
         await postData({ action: 'updateBulkStudents', payload: [currentUserData, targetUserData] });
     }
     
-    // --- PULL TO REFRESH LOGIC ---
-    function setupPullToRefresh() {
+    // --- UNIFIED TOUCH GESTURE LOGIC ---
+    function setupTouchGestures() {
         const appShell = el('app-shell');
         const mainContent = appShell.querySelector('main');
         const ptrIndicator = el('pull-to-refresh-indicator');
         const refreshIcon = el('refresh-icon');
 
-        let startY = 0;
-        let pullDistance = 0;
-        let isPulling = false;
-        const pullThreshold = 80; // Pixels to pull before refresh triggers
+        let startX = 0, startY = 0;
+        let deltaX = 0, deltaY = 0;
+        let gesture = null; // null, 'vertical', or 'horizontal'
+        
+        const pullThreshold = 80;
+        const swipeThreshold = 50;
+        const gestureLockThreshold = 10; // Pixels to move before locking gesture direction
 
         appShell.addEventListener('touchstart', (e) => {
-            // Only start pull if content is scrolled to the top
-            if (mainContent.scrollTop === 0) {
-                startY = e.touches[0].pageY;
-                isPulling = true;
-            }
+            // Ignore gestures on inputs, buttons, etc.
+            if (e.target.closest('input, button, a, select, textarea')) return;
+            
+            startX = e.touches[0].screenX;
+            startY = e.touches[0].screenY;
+            gesture = null;
         }, { passive: true });
 
         appShell.addEventListener('touchmove', (e) => {
-            if (!isPulling) return;
+            if (gesture === 'horizontal') {
+                // Horizontal swipe is in progress, could add visual feedback here if desired
+                return;
+            }
 
-            const currentY = e.touches[0].pageY;
-            pullDistance = currentY - startY;
+            deltaX = e.touches[0].screenX - startX;
+            deltaY = e.touches[0].screenY - startY;
 
-            if (pullDistance > 0) {
-                e.preventDefault(); // Prevent scrolling while pulling
-                ptrIndicator.classList.add('visible');
-                const rotation = Math.min(pullDistance, pullThreshold) / pullThreshold * 180;
-                refreshIcon.style.transform = `translateY(${pullDistance / 2}px)`;
-                const svg = refreshIcon.querySelector('svg');
-                if (svg) {
-                    svg.style.transform = `rotate(${rotation}deg)`;
-                }
-
-                if (pullDistance >= pullThreshold) {
-                    refreshIcon.classList.add('ready-to-refresh');
-                } else {
-                    refreshIcon.classList.remove('ready-to-refresh');
+            if (!gesture) {
+                if (Math.abs(deltaX) > gestureLockThreshold || Math.abs(deltaY) > gestureLockThreshold) {
+                    gesture = Math.abs(deltaX) > Math.abs(deltaY) ? 'horizontal' : 'vertical';
                 }
             }
 
+            if (gesture === 'vertical') {
+                // Only handle pull-to-refresh if scrolling up from the top
+                if (mainContent.scrollTop === 0 && deltaY > 0) {
+                    e.preventDefault(); // Prevent browser's default pull-to-refresh
+                    ptrIndicator.classList.add('visible');
+                    const pullDistance = deltaY;
+                    const rotation = Math.min(pullDistance, pullThreshold) / pullThreshold * 180;
+                    refreshIcon.style.transform = `translateY(${pullDistance / 2}px)`;
+                    const svg = refreshIcon.querySelector('svg');
+                    if (svg) {
+                        svg.style.transform = `rotate(${rotation}deg)`;
+                    }
+
+                    if (pullDistance >= pullThreshold) {
+                        refreshIcon.classList.add('ready-to-refresh');
+                    } else {
+                        refreshIcon.classList.remove('ready-to-refresh');
+                    }
+                }
+            }
         }, { passive: false });
 
-        appShell.addEventListener('touchend', () => {
-            if (!isPulling) return;
-            isPulling = false;
-
-            if (pullDistance >= pullThreshold) {
-                handleRefresh();
-            } else {
-                // Reset styles if not pulled far enough
-                ptrIndicator.classList.remove('visible');
-                refreshIcon.style.transform = 'translateY(0px)';
+        appShell.addEventListener('touchend', (e) => {
+            if (gesture === 'vertical') {
+                if (deltaY > pullThreshold && mainContent.scrollTop === 0) {
+                    handleRefresh();
+                } else {
+                    ptrIndicator.classList.remove('visible');
+                    refreshIcon.style.transform = 'translateY(0px)';
+                }
+            } else if (gesture === 'horizontal') {
+                if (Math.abs(deltaX) > swipeThreshold) {
+                    handleSwipe(deltaX);
+                }
             }
-            pullDistance = 0;
+            
+            // Reset gesture state
+            gesture = null;
+            deltaX = 0;
+            deltaY = 0;
         });
+
+        function handleSwipe(deltaX) {
+            const pageSequence = Array.from(document.querySelectorAll('.nav-item'))
+                .filter(item => item.style.display !== 'none')
+                .map(item => item.dataset.page);
+            
+            const currentIndex = pageSequence.indexOf(currentPageId);
+            if (currentIndex === -1) return;
+
+            if (deltaX < 0) { // Swipe Left
+                const nextIndex = (currentIndex + 1) % pageSequence.length;
+                switchPage(pageSequence[nextIndex]);
+            } else { // Swipe Right
+                const prevIndex = (currentIndex - 1 + pageSequence.length) % pageSequence.length;
+                switchPage(pageSequence[prevIndex]);
+            }
+        }
 
         async function handleRefresh() {
             refreshIcon.classList.remove('ready-to-refresh');
             refreshIcon.classList.add('refreshing');
-            
-            // Wait for data to load
             await loadDataFromGoogleSheet(true);
 
-            // Hide indicator after a short delay
             setTimeout(() => {
                 ptrIndicator.classList.remove('visible');
                 refreshIcon.classList.remove('refreshing');
@@ -1420,55 +1455,6 @@
             }, 500);
         }
     }
-
-    // --- SWIPE NAVIGATION LOGIC ---
-    function setupSwipeNavigation() {
-        const mainContent = el('app-shell').querySelector('main');
-        let touchStartX = 0;
-        let touchEndX = 0;
-        let touchStartY = 0;
-        let touchEndY = 0;
-        const swipeThreshold = 50; // Minimum distance for a swipe
-
-        mainContent.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-
-        mainContent.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-
-            // Ensure it's a horizontal swipe and not a vertical scroll
-            if (Math.abs(deltaX) < swipeThreshold || Math.abs(deltaX) < Math.abs(deltaY)) {
-                return;
-            }
-
-            const pageSequence = Array.from(document.querySelectorAll('.nav-item'))
-                .filter(item => item.style.display !== 'none')
-                .map(item => item.dataset.page);
-            
-            const currentIndex = pageSequence.indexOf(currentPageId);
-            if (currentIndex === -1) return;
-
-            if (deltaX < 0) {
-                // Swipe Left -> Next Page
-                const nextIndex = (currentIndex + 1) % pageSequence.length;
-                switchPage(pageSequence[nextIndex]);
-            } else {
-                // Swipe Right -> Previous Page
-                const prevIndex = (currentIndex - 1 + pageSequence.length) % pageSequence.length;
-                switchPage(pageSequence[prevIndex]);
-            }
-        }
-    }
-
 
     // --- PDF & LINKING FUNCTIONS ---
     function downloadMonthlyReportPDF() {
