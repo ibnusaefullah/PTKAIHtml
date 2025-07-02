@@ -80,12 +80,7 @@
         }
         main:not(#splash-screen) { background-color: var(--bg-secondary); }
         #app-container { display: none; }
-        .page { display: none; animation: fadeIn 0.3s ease-in-out; }
-        .page.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        
         .bottom-nav {
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
             background-color: var(--bg-primary);
@@ -112,6 +107,44 @@
         .category-btn { scroll-snap-align: start; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* [PAGE TRANSITION STYLES] */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slide-in-from-right {
+            from { transform: translateX(100%); opacity: 0.8; }
+            to { transform: translateX(0%); opacity: 1; }
+        }
+        @keyframes slide-in-from-left {
+            from { transform: translateX(-100%); opacity: 0.8; }
+            to { transform: translateX(0%); opacity: 1; }
+        }
+        @keyframes slide-out-to-left {
+            from { transform: translateX(0%); opacity: 1; }
+            to { transform: translateX(-100%); opacity: 0.8; }
+        }
+        @keyframes slide-out-to-right {
+            from { transform: translateX(0%); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0.8; }
+        }
+
+        .page {
+            display: none;
+            animation-duration: 0.3s;
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
+        }
+        .page.active {
+            display: block;
+        }
+        .page.fade-in { animation-name: fadeIn; }
+        .page.slide-in-from-right { animation-name: slide-in-from-right; }
+        .page.slide-in-from-left { animation-name: slide-in-from-left; }
+        .page.slide-out-to-left { animation-name: slide-out-to-left; }
+        .page.slide-out-to-right { animation-name: slide-out-to-right; }
+
 
         /* [GLASSMORPHISM LOGIN STYLES] */
         .glass-modal-content {
@@ -548,35 +581,62 @@
         el('header-settings-btn').addEventListener('click', () => switchPage('profile'));
     }
     
-    function switchPage(pageId, forceRerender = false) {
-        const currentPage = document.querySelector('.page.active');
-        if (!forceRerender && currentPage && currentPage.id === `page-${pageId}`) {
-            return; // Don't re-render if it's the same page, unless forced
+    function switchPage(pageId, forceRerender = false, swipeDirection = null) {
+        const currentPageEl = document.querySelector('.page.active');
+        const newPageEl = el(`page-${pageId}`);
+
+        if (!newPageEl || (!forceRerender && currentPageEl && currentPageEl.id === `page-${pageId}`)) {
+            return;
         }
-        
+
+        // --- Update Nav Bar ---
         currentPageId = pageId;
         updateRefreshIcon();
-
-        insertIcons(); 
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.remove('active');
             const iconId = item.dataset.page;
             const iconSet = icons[iconId];
             const existingIcon = item.querySelector('svg');
             if (existingIcon) existingIcon.remove();
-            if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.outline);
-             if (item.dataset && item.dataset.page === pageId) {
-                 item.classList.add('active');
-                 el('header-title').textContent = item.querySelector('.nav-text').textContent;
-                 const activeIcon = item.querySelector('svg');
-                 if (activeIcon) activeIcon.remove();
-                 if(iconSet) item.insertAdjacentHTML('afterbegin', iconSet.filled);
-             }
+            if (iconSet) item.insertAdjacentHTML('afterbegin', iconSet.outline);
+            if (item.dataset && item.dataset.page === pageId) {
+                item.classList.add('active');
+                el('header-title').textContent = item.querySelector('.nav-text').textContent;
+                const activeIcon = item.querySelector('svg');
+                if (activeIcon) activeIcon.remove();
+                if (iconSet) item.insertAdjacentHTML('afterbegin', iconSet.filled);
+            }
         });
-        const newPage = el(`page-${pageId}`);
-        if (newPage) newPage.classList.add('active');
         
+        // --- Animate Page Transition ---
+        function onAnimationEnd(event) {
+            event.target.classList.remove('active', 'slide-out-to-left', 'slide-out-to-right');
+            event.target.removeEventListener('animationend', onAnimationEnd);
+        }
+
+        if (currentPageEl && swipeDirection) {
+            const slideOutClass = swipeDirection === 'left' ? 'slide-out-to-left' : 'slide-out-to-right';
+            const slideInClass = swipeDirection === 'left' ? 'slide-in-from-right' : 'slide-in-from-left';
+            
+            currentPageEl.addEventListener('animationend', onAnimationEnd);
+            
+            // Reset classes before applying new ones
+            currentPageEl.className = 'page active';
+            void currentPageEl.offsetWidth; // Trigger reflow to restart animation
+            currentPageEl.classList.add(slideOutClass);
+
+            newPageEl.className = 'page active';
+            void newPageEl.offsetWidth; // Trigger reflow
+            newPageEl.classList.add(slideInClass);
+
+        } else { // Default fade for clicks or first load
+            if (currentPageEl) {
+                currentPageEl.classList.remove('active');
+            }
+            newPageEl.className = 'page active fade-in';
+        }
+
+        // --- Render Page Content ---
         if (pageId === 'home') renderHomePage();
         if (pageId === 'video') renderVideoPage();
         if (pageId === 'book') renderBookPage();
@@ -1437,10 +1497,10 @@
 
             if (deltaX < 0) { // Swipe Left
                 const nextIndex = (currentIndex + 1) % pageSequence.length;
-                switchPage(pageSequence[nextIndex]);
+                switchPage(pageSequence[nextIndex], false, 'left');
             } else { // Swipe Right
                 const prevIndex = (currentIndex - 1 + pageSequence.length) % pageSequence.length;
-                switchPage(pageSequence[prevIndex]);
+                switchPage(pageSequence[prevIndex], false, 'right');
             }
         }
 
